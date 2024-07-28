@@ -1,4 +1,52 @@
-HELP.md
+### MacOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### Windows ###
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Windows 10
+CredentialUIBroker.exe
+
+# Windows image file caches
+*.tif
+*.tiff
+*.tga
+*.dds
+
+# Folder config file
+[Dd]esktop.ini
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows shortcuts
+*.lnk
+
+### Gradle ###
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -35,3 +83,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### YML and Properties files ###
+*.yml
+*.yaml
+*.properties
