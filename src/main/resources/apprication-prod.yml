@@ -1,0 +1,17 @@
+spring:
+  profiles: prod
+
+  datasource:
+    url: jdbc:mysql://${PROD_DB_HOST}:${PROD_DB_PORT}/prod_db_name
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+logging:
+  level:
+    root: info

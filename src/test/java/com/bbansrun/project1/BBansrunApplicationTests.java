@@ -1,10 +1,10 @@
-package com.lchproject3.project3;
+package com.bbansrun.project1;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Project3ApplicationTests {
+class BBansrunApplicationTests {
 
 	@Test
 	void contextLoads() {

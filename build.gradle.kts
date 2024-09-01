@@ -4,7 +4,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.6"
 }
 
-group = "com.lchproject3"
+group = "com.bbansrun"
 version = "0.0.1-SNAPSHOT"
 
 java {
@@ -52,6 +52,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation") // MVC 유효성 검증 기능
 	implementation("com.fasterxml.jackson.core:jackson-databind") // JSON 데이터 바인딩
 	implementation("org.springdoc:springdoc-openapi-ui:1.7.0") // OpenAPI 3.0 문서 생성
+
+	implementation("io.github.CinemaScope:spring-boot-dotenv") // .env 파일 사용
 }
 
 tasks.withType<Test> {

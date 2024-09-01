@@ -38,7 +38,6 @@ CredentialUIBroker.exe
 
 # Folder config file
 [Dd]esktop.ini
-[Dd]esktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
@@ -84,7 +83,12 @@ out/
 ### VS Code ###
 .vscode/
 
-### YML and Properties files ###
-*.yml
-*.yaml
-*.properties
+### 환경 파일 (.env) ###
+.env
+.env.*
+
+### Logs ###
+*.log
+
+### Backup files ###
+*.bak

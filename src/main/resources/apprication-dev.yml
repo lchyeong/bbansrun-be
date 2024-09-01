@@ -1,0 +1,17 @@
+spring:
+  profiles: dev
+
+  datasource:
+    url: jdbc:mysql://${DEV_DB_HOST}:${DEV_DB_PORT}/dev_db_name
+    username: ${DEV_DB_USERNAME}
+    password: ${DEV_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    root: debug
