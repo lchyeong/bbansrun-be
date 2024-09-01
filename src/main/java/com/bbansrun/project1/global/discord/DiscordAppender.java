@@ -3,6 +3,9 @@ package com.bbansrun.project1.global.discord;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -14,10 +17,6 @@ import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 @Setter
 @Component
 @Slf4j
@@ -28,6 +27,7 @@ public class DiscordAppender extends AppenderBase<ILoggingEvent> {
 
     /**
      * 로그 이벤트를 Discord로 전송합니다.
+     *
      * @param event 로깅 이벤트
      */
     @Override
@@ -54,8 +54,9 @@ public class DiscordAppender extends AppenderBase<ILoggingEvent> {
 
     /**
      * Discord로 전송할 HTTP POST 요청을 생성합니다.
+     *
      * @param webhookUrl Discord 웹훅 URL
-     * @param payload 전송할 페이로드
+     * @param payload    전송할 페이로드
      * @return HTTP POST 요청
      */
     private HttpPost createHttpPost(String webhookUrl, String payload) {
@@ -66,11 +67,13 @@ public class DiscordAppender extends AppenderBase<ILoggingEvent> {
 
     /**
      * Discord로 전송할 페이로드를 생성합니다.
+     *
      * @param event 로깅 이벤트
      * @return 페이로드
      */
     private String createPayload(ILoggingEvent event) {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String timestamp = LocalDateTime.now()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         String level = event.getLevel().toString();
         String loggerName = getLastThreeParts(event.getLoggerName());
         String message = event.getFormattedMessage();
@@ -85,6 +88,7 @@ public class DiscordAppender extends AppenderBase<ILoggingEvent> {
 
     /**
      * 로그 레벨에 따라 이모지를 반환합니다.
+     *
      * @param level 로그 레벨
      * @return 이모지
      */
@@ -100,6 +104,7 @@ public class DiscordAppender extends AppenderBase<ILoggingEvent> {
 
     /**
      * 로거 이름에서 마지막 세 부분을 가져옵니다.
+     *
      * @param loggerName 로거 이름
      * @return 마지막 세 부분
      */

@@ -1,77 +1,77 @@
 <configuration>
-    <!-- Console Appender 설정 -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
+  <!-- Console Appender 설정 -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
 
-    <!-- Discord Webhook 설정 -->
-    <property name="errorWebhookUrl" value="${DISCORD_WEBHOOK_ERROR}"/>
-    <property name="warnWebhookUrl" value="${DISCORD_WEBHOOK_WARN}"/>
-    <property name="infoWebhookUrl" value="${DISCORD_WEBHOOK_INFO}"/>
-    <property name="debugWebhookUrl" value="${DISCORD_WEBHOOK_DEBUG}"/>
+  <!-- Discord Webhook 설정 -->
+  <property name="errorWebhookUrl" value="${DISCORD_WEBHOOK_ERROR}"/>
+  <property name="warnWebhookUrl" value="${DISCORD_WEBHOOK_WARN}"/>
+  <property name="infoWebhookUrl" value="${DISCORD_WEBHOOK_INFO}"/>
+  <property name="debugWebhookUrl" value="${DISCORD_WEBHOOK_DEBUG}"/>
 
-    <!-- Discord Appender 설정 -->
-    <appender name="DISCORD_ERROR" class="com.bbansrun.project1.global.discord.DiscordAppender">
-        <webhookUrl>${errorWebhookUrl}</webhookUrl>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-    </appender>
+  <!-- Discord Appender 설정 -->
+  <appender name="DISCORD_ERROR" class="com.bbansrun.project1.global.discord.DiscordAppender">
+    <webhookUrl>${errorWebhookUrl}</webhookUrl>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
 
-    <appender name="DISCORD_WARN" class="com.bbansrun.project1.global.discord.DiscordAppender">
-        <webhookUrl>${warnWebhookUrl}</webhookUrl>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>WARN</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-    </appender>
+  <appender name="DISCORD_WARN" class="com.bbansrun.project1.global.discord.DiscordAppender">
+    <webhookUrl>${warnWebhookUrl}</webhookUrl>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>WARN</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
 
-    <appender name="DISCORD_INFO" class="com.bbansrun.project1.global.discord.DiscordAppender">
-        <webhookUrl>${infoWebhookUrl}</webhookUrl>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-    </appender>
+  <appender name="DISCORD_INFO" class="com.bbansrun.project1.global.discord.DiscordAppender">
+    <webhookUrl>${infoWebhookUrl}</webhookUrl>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>INFO</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
 
-    <appender name="DISCORD_DEBUG" class="com.bbansrun.project1.global.discord.DiscordAppender">
-        <webhookUrl>${debugWebhookUrl}</webhookUrl>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>DEBUG</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-    </appender>
+  <appender name="DISCORD_DEBUG" class="com.bbansrun.project1.global.discord.DiscordAppender">
+    <webhookUrl>${debugWebhookUrl}</webhookUrl>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>DEBUG</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
 
-    <!-- Logger 설정 -->
-    <logger name="com.bbansrun.project1" level="error" additivity="false">
-        <appender-ref ref="DISCORD_ERROR"/>
-        <appender-ref ref="CONSOLE"/>
-    </logger>
+  <!-- Logger 설정 -->
+  <logger name="com.bbansrun.project1" level="error" additivity="false">
+    <appender-ref ref="DISCORD_ERROR"/>
+    <appender-ref ref="CONSOLE"/>
+  </logger>
 
-    <logger name="com.bbansrun.project1" level="warn" additivity="false">
-        <appender-ref ref="DISCORD_WARN"/>
-        <appender-ref ref="CONSOLE"/>
-    </logger>
+  <logger name="com.bbansrun.project1" level="warn" additivity="false">
+    <appender-ref ref="DISCORD_WARN"/>
+    <appender-ref ref="CONSOLE"/>
+  </logger>
 
-    <logger name="com.bbansrun.project1" level="info" additivity="false">
-        <appender-ref ref="DISCORD_INFO"/>
-        <appender-ref ref="CONSOLE"/>
-    </logger>
+  <logger name="com.bbansrun.project1" level="info" additivity="false">
+    <appender-ref ref="DISCORD_INFO"/>
+    <appender-ref ref="CONSOLE"/>
+  </logger>
 
-    <logger name="com.bbansrun.project1" level="debug" additivity="false">
-        <appender-ref ref="DISCORD_DEBUG"/>
-        <appender-ref ref="CONSOLE"/>
-    </logger>
+  <logger name="com.bbansrun.project1" level="debug" additivity="false">
+    <appender-ref ref="DISCORD_DEBUG"/>
+    <appender-ref ref="CONSOLE"/>
+  </logger>
 
-    <!-- Root Logger 설정 -->
-    <root level="info">
-        <appender-ref ref="CONSOLE" />
-    </root>
+  <!-- Root Logger 설정 -->
+  <root level="info">
+    <appender-ref ref="CONSOLE"/>
+  </root>
 </configuration>

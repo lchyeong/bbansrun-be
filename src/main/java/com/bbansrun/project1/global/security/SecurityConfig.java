@@ -20,24 +20,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource)) // CORS 설정
-                .csrf(AbstractHttpConfigurer::disable) //이거 꺼야 H2 접근가능
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) // H2 콘솔이 iframe 내에서 열릴 수 있도록 설정
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 접근 허용
-                                .anyRequest().permitAll() // 모든 요청을 허용
-                )
-                .formLogin(formLogin ->
-                        formLogin
-                                .loginPage("/login")
-                                .permitAll()
-                )
-                .logout(logout ->
-                        logout
-                                .logoutUrl("/logout")
-                                .permitAll()
-                );
+            .cors(cors -> cors.configurationSource(corsConfigurationSource)) // CORS 설정
+            .csrf(AbstractHttpConfigurer::disable) //이거 꺼야 H2 접근가능
+            .headers(headers -> headers.frameOptions(
+                HeadersConfigurer.FrameOptionsConfig::sameOrigin)) // H2 콘솔이 iframe 내에서 열릴 수 있도록 설정
+            .authorizeHttpRequests(authorizeRequests ->
+                authorizeRequests
+                    .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 접근 허용
+                    .anyRequest().permitAll() // 모든 요청을 허용
+            )
+            .formLogin(formLogin ->
+                formLogin
+                    .loginPage("/login")
+                    .permitAll()
+            )
+            .logout(logout ->
+                logout
+                    .logoutUrl("/logout")
+                    .permitAll()
+            );
         return http.build();
     }
 }
