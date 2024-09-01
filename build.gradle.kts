@@ -21,6 +21,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -53,7 +54,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.core:jackson-databind") // JSON 데이터 바인딩
 	implementation("org.springdoc:springdoc-openapi-ui:1.7.0") // OpenAPI 3.0 문서 생성
 
-	implementation("io.github.CinemaScope:spring-boot-dotenv") // .env 파일 사용
+	implementation("io.github.cdimascio:java-dotenv:5.2.2") // .env 파일 사용
 }
 
 tasks.withType<Test> {
