@@ -1,26 +1,29 @@
-# Step 1: Base image for building the application
-FROM gradle:7.6-jdk17 AS build
+# 1. Build stage
+FROM gradle:7.6.0-jdk17 AS build
 
-# Set the working directory
+# 컨테이너 내 작업 디렉토리 설정
 WORKDIR /app
 
-# Copy the project files
+# 프로젝트의 모든 파일을 컨테이너로 복사
 COPY . .
 
-# Build the application and create the JAR file
-RUN gradle build -x test --no-daemon
+# 애플리케이션 빌드
+RUN ./gradlew build -x test --no-daemon
 
-# Step 2: Base image for running the application
+# 2. Runtime stage
 FROM openjdk:17-jdk-slim
 
-# Set the working directory
+# 컨테이너 내 작업 디렉토리 설정
 WORKDIR /app
 
-# Copy the JAR file from the build stage
+# curl 설치
+RUN apt-get update && apt-get install -y curl
+
+# 빌드한 JAR 파일을 가져와서 컨테이너로 복사
 COPY --from=build /app/build/libs/bbansrun-0.0.1-SNAPSHOT.jar /app/bbansrun.jar
 
-# Expose the application port
+# 애플리케이션이 사용할 포트 노출
 EXPOSE 8080
 
-# Run the application
+# 컨테이너 시작 시 실행할 명령어 설정
 CMD ["java", "-jar", "/app/bbansrun.jar"]
