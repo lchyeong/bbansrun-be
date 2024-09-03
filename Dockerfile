@@ -7,7 +7,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Step 3: Copy the JAR file (Make sure the JAR file is available in the target directory)
-COPY target/bbansrun-0.0.1-SNAPSHOT.jar /app/bbansrun.jar
+COPY build/libs/bbansrun-0.0.1-SNAPSHOT.jar /app/bbansrun.jar
 
 # Step 4: Expose the application port
 EXPOSE 8080
