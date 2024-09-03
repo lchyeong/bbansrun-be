@@ -1,0 +1,87 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t chany91/bbansrun-be:latest .
+          docker push chany91/bbansrun-be:latest
+
+      - name: Deploy to server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+          echo "${SSH_PRIVATE_KEY}" > deploy_key
+          chmod 600 deploy_key
+          ssh -o StrictHostKeyChecking=no -i deploy_key ubuntu@${SERVER_IP} << 'EOF'
+            set -e
+
+            cd /var/www
+
+            # .env 파일 서버로 복사
+            scp /path/to/.env ubuntu@${SERVER_IP}:/var/www
+
+            # 기존 포트 8080 상태 확인
+            if lsof -i:8080 > /dev/null; then
+              echo "Port 8080 is currently in use. Preparing to deploy on port 8081."
+              PORT=8081
+            else
+              echo "Port 8080 is free. Deploying on port 8080."
+              PORT=8080
+            fi
+          
+            # 새로운 포트에서 애플리케이션 실행
+            BACKEND_PORT=$PORT docker-compose up -d --no-deps
+
+            # 새로운 컨테이너가 정상적으로 실행되었는지 3번까지 반복 확인
+            for i in 1 2 3; do
+              echo "Checking if application is running on port $PORT (Attempt $i/3)..."
+              if curl -f http://localhost:$PORT > /dev/null; then
+                echo "Application is running on port $PORT."
+                break
+              else
+                echo "Application is not yet running, retrying in 20 seconds..."
+                sleep 30
+              fi
+
+              if [ $i -eq 3 ]; then
+                echo "Error: Application failed to start on port $PORT after 3 attempts."
+                exit 1
+              fi
+            done
+
+            # 포트가 정상적으로 구동된 후에만 트래픽 전환
+            if [ $PORT -eq 8081 ]; then
+              docker stop be-8080 || true
+              docker rm be-8080 || true
+
+              # 포트 8080으로 트래픽 전환
+              docker stop be-8081 || true
+              docker rm be-8081 || true
+              BACKEND_PORT=8080 docker-compose up -d --no-deps
+            fi
+
+            # 이전 포트 제거 (포트 8082 사용 중지)
+            docker stop be-8082 || true
+            docker rm be-8082 || true
+
+            echo "Deployment completed successfully on port $PORT."
+          EOF
