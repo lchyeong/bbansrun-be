@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Step 3: Copy the JAR file
-COPY target/your-app-name.jar /app/bbansrun.jar
+COPY target/bbansrun.jar /app/bbansrun.jar
 
 # Step 4: Copy the .env file
 COPY .env /app/.env
