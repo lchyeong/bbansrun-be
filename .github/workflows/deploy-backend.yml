@@ -24,6 +24,9 @@ jobs:
           docker build -t chany91/bbansrun-be:latest .
           docker push chany91/bbansrun-be:latest
 
+      - name: Find all JAR file
+        run: find . -name "*.jar"
+
       - name: Deploy to server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
