@@ -31,10 +31,6 @@ public class SecurityConfig {
                 authorizeRequests
                     .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 접근 허용
                     .requestMatchers("/public/**").permitAll() // 공개 리소스 허용
-                    .anyRequest().authenticated() // 나머지 요청은 인증 필요
-            )
-            .authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests
                     .requestMatchers("/api/public/**").permitAll() // /api/public/** 경로는 인증 없이 접근 허용
                     .requestMatchers("/api/admin/**")
                     .hasRole("ADMIN") // /api/admin/** 경로는 ADMIN 권한 필요
@@ -57,10 +53,10 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionFixation().migrateSession() // 세션 고정 공격 방지
                 .maximumSessions(1) // 하나의 사용자당 하나의 세션만 허용
-                .expiredUrl("/login?expired")) // 세션 만료 시 이동할 페이지
-            .rememberMe(rememberMe -> rememberMe
-                .key("uniqueAndSecret") // Remember Me 기능 설정
-                .tokenValiditySeconds(86400)); // Remember Me 기간 설정 (1일)
+                .expiredUrl("/login?expired")); // 세션 만료 시 이동할 페이지
+//            .rememberMe(rememberMe -> rememberMe
+//                .key("uniqueAndSecret") // Remember Me 기능 설정
+//                .tokenValiditySeconds(86400)); // Remember Me 기간 설정 (1일)
         return http.build();
     }
 }
