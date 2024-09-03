@@ -36,9 +36,6 @@ jobs:
 
             cd /var/www
 
-            # .env 파일 서버로 복사
-            scp /path/to/.env ubuntu@${SERVER_IP}:/var/www
-
             # 기존 포트 8080 상태 확인
             if lsof -i:8080 > /dev/null; then
               echo "Port 8080 is currently in use. Preparing to deploy on port 8081."

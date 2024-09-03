@@ -1,17 +1,16 @@
+# Dockerfile
+
 # Step 1: Base image
 FROM openjdk:17-jdk-slim
 
 # Step 2: Set working directory
 WORKDIR /app
 
-# Step 3: Copy the JAR file
+# Step 3: Copy the JAR file (Make sure the JAR file is available in the target directory)
 COPY target/bbansrun.jar /app/bbansrun.jar
 
-# Step 4: Copy the .env file
-COPY .env /app/.env
-
-# Step 5: Expose the application port
+# Step 4: Expose the application port
 EXPOSE 8080
 
-# Step 6: Run the application
+# Step 5: Run the application
 CMD ["java", "-jar", "/app/bbansrun.jar"]
