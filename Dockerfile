@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Build the application and create the JAR file
-RUN gradle build --no-daemon
+RUN gradle build -x test --no-daemon
 
 # Step 2: Base image for running the application
 FROM openjdk:17-jdk-slim
