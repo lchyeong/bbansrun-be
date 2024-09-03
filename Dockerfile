@@ -1,16 +1,26 @@
-# Dockerfile
+# Step 1: Base image for building the application
+FROM gradle:7.6-jdk17 AS build
 
-# Step 1: Base image
-FROM openjdk:17-jdk-slim
-
-# Step 2: Set working directory
+# Set the working directory
 WORKDIR /app
 
-# Step 3: Copy the JAR file (Make sure the JAR file is available in the target directory)
-COPY /build/libs/bbansrun-0.0.1-SNAPSHOT.jar /app/bbansrun.jar
+# Copy the project files
+COPY . .
 
-# Step 4: Expose the application port
+# Build the application and create the JAR file
+RUN gradle build --no-daemon
+
+# Step 2: Base image for running the application
+FROM openjdk:17-jdk-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the JAR file from the build stage
+COPY --from=build /app/build/libs/bbansrun-0.0.1-SNAPSHOT.jar /app/bbansrun.jar
+
+# Expose the application port
 EXPOSE 8080
 
-# Step 5: Run the application
+# Run the application
 CMD ["java", "-jar", "/app/bbansrun.jar"]
