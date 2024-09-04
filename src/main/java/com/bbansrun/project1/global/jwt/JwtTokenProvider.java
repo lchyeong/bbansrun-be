@@ -30,11 +30,9 @@ public class JwtTokenProvider {
      * @param roles     사용자 권한 (ROLE_USER, ROLE_ADMIN)
      * @return 생성된 JWT 토큰
      */
-    public String createToken(UUID user_uuid, String[] roles) {
-        // JWT 클레임에 사용자 정보 (UUID, 권한)를 추가
-        Claims claims = Jwts.claims()
-            .setSubject(user_uuid.toString()); // UUID를 문자열로 변환하여 subject에 넣음
-        claims.put("roles", roles); // 권한 정보는 배열로 추가
+    public String createToken(UUID userUuid, String[] roles) {
+        Claims claims = Jwts.claims().setSubject(userUuid.toString());
+        claims.put("roles", roles);
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);

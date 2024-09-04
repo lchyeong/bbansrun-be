@@ -18,8 +18,14 @@ public enum ErrorCode {
 
     // 사용자 관련 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "U001", "User not found"),
-    INVALID_USER_PASSWORD(HttpStatus.BAD_REQUEST, 400, "U002", "Invalid user password");
+    INVALID_USER_PASSWORD(HttpStatus.BAD_REQUEST, 400, "U002", "Invalid user password"),
 
+    // 추가적인 공통 에러
+    MEDIA_TYPE_NOT_SUPPORTED(HttpStatus.UNSUPPORTED_MEDIA_TYPE, 415, "C007",
+        "Media type not supported"),
+    MISSING_PARAMETER(HttpStatus.BAD_REQUEST, 400, "C008", "Missing request parameter"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, 401, "C009", "Unauthorized");
+    
     private final HttpStatus status;
     private final int statusCode;
     private final String code;
