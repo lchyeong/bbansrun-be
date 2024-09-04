@@ -56,7 +56,6 @@ dependencies {
 
     implementation("io.github.cdimascio:java-dotenv:5.2.2") // .env 파일 사용
     implementation("org.springframework.boot:spring-boot-starter-mail") // 이메일 발송
-    implementation("org.springframework.boot:spring-boot-starter-data-redis") // Redis 사용
 
     // JWT 토큰 생성 및 검증
     implementation("com.auth0:java-jwt:4.4.0")

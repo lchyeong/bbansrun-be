@@ -1,16 +1,12 @@
 package com.bbansrun.project1.service;
 
-import com.bbansrun.project1.domain.users.entity.Role;
 import com.bbansrun.project1.domain.users.entity.User;
 import com.bbansrun.project1.domain.users.repository.UserRepository;
 import com.bbansrun.project1.global.exception.ApiException;
 import com.bbansrun.project1.global.exception.ErrorCode;
-import java.util.Collection;
-import java.util.Set;
+import com.bbansrun.project1.global.jwt.CustomUserDetails;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,11 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
 
-        return new org.springframework.security.core.userdetails.User(
-            user.getEmail(),      // 사용자의 이메일을 username처럼 사용
-            user.getPassword(),
-            mapRolesToAuthorities(user.getRoles())  // 권한 정보를 변환하여 반환
-        );
+        return new CustomUserDetails(user);
     }
 
     /**
@@ -44,22 +36,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUserUuid(userUuid)
             .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
 
-        return new org.springframework.security.core.userdetails.User(
-            user.getUserUuid().toString(),
-            user.getPassword(),
-            mapRolesToAuthorities(user.getRoles())  // 권한 정보를 변환하여 반환
-        );
-    }
-
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
-        // roles를 GrantedAuthority로 변환
-        return roles.stream()
-            .map(role -> new GrantedAuthority() {
-                @Override
-                public String getAuthority() {
-                    return role.getAuthority();
-                }
-            })
-            .collect(Collectors.toSet());
+        return new CustomUserDetails(user);
     }
 }

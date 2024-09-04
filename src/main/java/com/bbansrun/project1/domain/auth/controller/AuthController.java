@@ -20,9 +20,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         // AuthService 통해 인증하고 JWT 토큰 생성
-        String jwtToken = authService.authenticateAndCreateToken(loginRequest);
+        String jwtToken = authService.login(loginRequest);
 
         // JWT 토큰을 Authorization 헤더에 추가
         HttpHeaders headers = new HttpHeaders();

@@ -1,5 +1,6 @@
 package com.bbansrun.project1.global.jwt;
 
+
 import com.bbansrun.project1.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,8 +25,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService; // 사용자 정보 로드 서비스
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-        FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NotNull HttpServletRequest request,
+        @NotNull HttpServletResponse response,
+        @NotNull FilterChain filterChain) throws ServletException, IOException {
 
         // 요청 헤더에서 JWT 토큰 추출
         String token = resolveToken(request);
