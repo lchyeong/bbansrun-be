@@ -36,6 +36,23 @@ jobs:
 
             cd /var/www
 
+            # 함수 정의: 포트에서 애플리케이션 상태 확인
+            check_port() {
+              local PORT=$1
+              for i in 1 2 3; do
+                echo "Checking if application is running on port $PORT (Attempt $i/3)..."
+                if curl -f http://localhost:$PORT > /dev/null; then
+                  echo "Application is running on port $PORT."
+                  return 0
+                else
+                  echo "Application is not yet running, retrying in 20 seconds..."
+                  sleep 30
+                fi
+              done
+              echo "Error: Application failed to start on port $PORT after 3 attempts."
+              exit 1
+            }
+
             # 기존 포트 8080 상태 확인
             if lsof -i:8080 > /dev/null; then
               echo "Port 8080 is currently in use. Preparing to deploy on port 8081."
@@ -47,38 +64,25 @@ jobs:
           
             # 새로운 포트에서 애플리케이션 실행
             BACKEND_PORT=$PORT docker-compose up -d --no-deps bbansrun-be
+            check_port $PORT
 
-            # 새로운 컨테이너가 정상적으로 실행되었는지 3번까지 반복 확인
-            for i in 1 2 3; do
-              echo "Checking if application is running on port $PORT (Attempt $i/3)..."
-              if curl -f http://localhost:$PORT > /dev/null; then
-                echo "Application is running on port $PORT."
-                break
-              else
-                echo "Application is not yet running, retrying in 20 seconds..."
-                sleep 30
-              fi
-
-              if [ $i -eq 3 ]; then
-                echo "Error: Application failed to start on port $PORT after 3 attempts."
-                exit 1
-              fi
-            done
+            # 8081에서 8080으로 트래픽 전환하기 전 8082에서 준비
+            echo "Starting application on port 8082 for temporary fallback."
+            BACKEND_PORT=8082 docker-compose up -d --no-deps bbansrun-be
+            check_port 8082
 
             # 포트가 정상적으로 구동된 후에만 트래픽 전환
             if [ $PORT -eq 8081 ]; then
               docker stop be-8080 || true
               docker rm be-8080 || true
 
-              # 포트 8080으로 트래픽 전환
-              docker stop be-8081 || true
-              docker rm be-8081 || true
+              # 8082에서 서비스 정상 작동 확인 후 8080으로 트래픽 전환
               BACKEND_PORT=8080 docker-compose up -d --no-deps bbansrun-be
+          
+              echo "Stopping temporary instance on port 8082."
+              docker stop be-8082 || true
+              docker rm be-8082 || true
             fi
-
-            # 이전 포트 제거 (포트 8082 사용 중지)
-            docker stop be-8082 || true
-            docker rm be-8082 || true
 
             echo "Deployment completed successfully on port $PORT."
           EOF
