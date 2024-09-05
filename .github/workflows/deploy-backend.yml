@@ -41,7 +41,7 @@ jobs:
               local PORT=$1
               for i in 1 2 3; do
                 echo "Checking if application is running on port $PORT (Attempt $i/3)..."
-                if curl -f http://localhost:$PORT > /dev/null; then
+                if curl -f http://localhost:$PORT/actuator/health > /dev/null; then
                   echo "Application is running on port $PORT."
                   return 0
                 else
