@@ -5,7 +5,7 @@ FROM gradle:7.6.0-jdk17-alpine AS build
 WORKDIR /app
 
 # 의존성 캐시 활용을 위한 Gradle 디렉토리 복사
-COPY --chown=gradle:gradle build.gradle settings.gradle gradle.properties ./
+COPY --chown=gradle:gradle build.gradle.kts settings.gradle.kts ./
 COPY --chown=gradle:gradle gradle ./gradle
 
 # 의존성 캐시를 생성
