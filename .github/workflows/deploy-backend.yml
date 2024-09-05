@@ -66,19 +66,21 @@ jobs:
             BACKEND_PORT=$PORT docker-compose up -d --no-deps bbansrun-be
             check_port $PORT
 
-            # 8081에서 8080으로 트래픽 전환하기 전 8082에서 준비
-            echo "Starting application on port 8082 for temporary fallback."
-            BACKEND_PORT=8082 docker-compose up -d --no-deps bbansrun-be
-            check_port 8082
-
             # 포트가 정상적으로 구동된 후에만 트래픽 전환
             if [ $PORT -eq 8081 ]; then
+              echo "Starting application on port 8082 for temporary fallback."
+              BACKEND_PORT=8082 docker-compose up -d --no-deps bbansrun-be
+              check_port 8082
+
+              # 8080 포트 비우기
               docker stop be-8080 || true
               docker rm be-8080 || true
 
-              # 8082에서 서비스 정상 작동 확인 후 8080으로 트래픽 전환
+              # 8081 포트를 8080으로 전환
               BACKEND_PORT=8080 docker-compose up -d --no-deps bbansrun-be
-          
+              check_port 8080
+
+              # 임시로 띄운 8082 포트 제거
               echo "Stopping temporary instance on port 8082."
               docker stop be-8082 || true
               docker rm be-8082 || true
