@@ -75,8 +75,6 @@ jobs:
               docker-compose up -d --no-deps bbansrun-be-8080
               check_port 8080
             fi
-
-            curl -X POST -H 'Content-Type: application/json' -d '{"content": "배포가 성공적으로 완료되었습니다."}' https://discord.com/api/webhooks/1281072652118655057/QVvLbv-FhwvVuEcTt7CNcd_gq07m-pcI_lf29EHa70or4Dx4BxP6ZXhPBfRZPyZT64ms
-
+            curl -X POST -H 'Content-Type: application/json' -d '{"content": "백엔드 배포가 성공적으로 완료되었습니다."}'  https://discord.com/api/webhooks/1281072652118655057/QVvLbv-FhwvVuEcTt7CNcd_gq07m-pcI_lf29EHa70or4Dx4BxP6ZXhPBfRZPyZT64ms -v
           EOF
           rm deploy_key
