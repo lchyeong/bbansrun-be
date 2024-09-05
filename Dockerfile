@@ -23,6 +23,9 @@ FROM openjdk:17-alpine
 # 컨테이너 내 작업 디렉토리 설정
 WORKDIR /app
 
+# 필요 시 curl 설치
+RUN apk --no-cache add curl
+
 # 빌드한 JAR 파일을 가져와서 컨테이너로 복사
 COPY --from=build /app/build/libs/bbansrun-0.0.1-SNAPSHOT.jar /app/bbansrun.jar
 
