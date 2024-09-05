@@ -18,7 +18,7 @@ COPY . .
 RUN ./gradlew build -x test --no-daemon
 
 # 2. Runtime stage
-FROM openjdk:17-jre-alpine
+FROM openjdk:17-alpine
 
 # 컨테이너 내 작업 디렉토리 설정
 WORKDIR /app
