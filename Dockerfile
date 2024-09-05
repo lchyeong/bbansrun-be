@@ -1,23 +1,30 @@
 # 1. Build stage
-FROM gradle:7.6.0-jdk17 AS build
+FROM gradle:7.6.0-jdk17-alpine AS build
 
 # 컨테이너 내 작업 디렉토리 설정
 WORKDIR /app
 
-# 프로젝트의 모든 파일을 컨테이너로 복사
+# 의존성 캐시 활용을 위한 Gradle 디렉토리 복사
+COPY --chown=gradle:gradle build.gradle settings.gradle gradle.properties ./
+COPY --chown=gradle:gradle gradle ./gradle
+
+# 의존성 캐시를 생성
+RUN gradle build -x test --no-daemon || return 0
+
+# 나머지 파일 복사
 COPY . .
 
 # 애플리케이션 빌드
 RUN ./gradlew build -x test --no-daemon
 
 # 2. Runtime stage
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-alpine
 
 # 컨테이너 내 작업 디렉토리 설정
 WORKDIR /app
 
-# curl 설치
-RUN apt-get update && apt-get install -y curl
+# 필요 시 curl 설치
+RUN apk --no-cache add curl
 
 # 빌드한 JAR 파일을 가져와서 컨테이너로 복사
 COPY --from=build /app/build/libs/bbansrun-0.0.1-SNAPSHOT.jar /app/bbansrun.jar

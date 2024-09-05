@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t chany91/bbansrun-be:latest .
+          docker build --cache-from=chany91/bbansrun-be:latest -t chany91/bbansrun-be:latest .
           docker push chany91/bbansrun-be:latest
 
       - name: Deploy to server
@@ -57,6 +57,7 @@ jobs:
             docker pull chany91/bbansrun-be:latest
 
             # 기존 포트 8080 상태 확인
+            PORT=8080
             if ss -tuln | grep :8080 > /dev/null; then
               echo "Port 8080 is currently in use. Preparing to deploy on port 8081."
               PORT=8081
@@ -91,4 +92,7 @@ jobs:
             fi
 
             echo "Deployment completed successfully on port $PORT."
+            curl -X POST -H 'Content-Type: application/json' -d '{"content": "배포가 성공적으로 완료되었습니다."}' https://discord.com/api/webhooks/1281072652118655057/QVvLbv-FhwvVuEcTt7CNcd_gq07m-pcI_lf29EHa70or4Dx4BxP6ZXhPBfRZPyZT64ms
+
           EOF
+          rm deploy_key
