@@ -1,3 +1,7 @@
 spring:
   application:
     name: bbansrun
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 3600000

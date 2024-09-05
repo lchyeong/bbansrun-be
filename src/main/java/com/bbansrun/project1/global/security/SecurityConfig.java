@@ -1,12 +1,17 @@
 package com.bbansrun.project1.global.security;
 
+import com.bbansrun.project1.global.jwt.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @RequiredArgsConstructor
@@ -14,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
+    private final JwtTokenFilter jwtTokenFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,25 +44,16 @@ public class SecurityConfig {
                     .hasAnyRole("USER", "ADMIN") // /api/user/** 경로는 USER 또는 ADMIN 권한 필요
                     .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
             )
-            .formLogin(formLogin ->
-                formLogin
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/dashboard", true) // 로그인 성공 시 이동할 페이지
-                    .permitAll()
-            )
-            .logout(logout ->
-                logout
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login?logout") // 로그아웃 후 이동할 페이지
-                    .permitAll()
-            )
             .sessionManagement(session -> session
-                .sessionFixation().migrateSession() // 세션 고정 공격 방지
-                .maximumSessions(1) // 하나의 사용자당 하나의 세션만 허용
-                .expiredUrl("/login?expired")); // 세션 만료 시 이동할 페이지
-//            .rememberMe(rememberMe -> rememberMe
-//                .key("uniqueAndSecret") // Remember Me 기능 설정
-//                .tokenValiditySeconds(86400)); // Remember Me 기간 설정 (1일)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않음 (stateless)
+            .addFilterBefore(jwtTokenFilter,
+                UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+        AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

@@ -46,7 +46,7 @@ jobs:
             fi
           
             # 새로운 포트에서 애플리케이션 실행
-            BACKEND_PORT=$PORT docker-compose up -d --no-deps
+            BACKEND_PORT=$PORT docker-compose up -d --no-deps bbansrun-be
 
             # 새로운 컨테이너가 정상적으로 실행되었는지 3번까지 반복 확인
             for i in 1 2 3; do
@@ -73,7 +73,7 @@ jobs:
               # 포트 8080으로 트래픽 전환
               docker stop be-8081 || true
               docker rm be-8081 || true
-              BACKEND_PORT=8080 docker-compose up -d --no-deps
+              BACKEND_PORT=8080 docker-compose up -d --no-deps bbansrun-be
             fi
 
             # 이전 포트 제거 (포트 8082 사용 중지)
