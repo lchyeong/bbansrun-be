@@ -45,7 +45,7 @@ jobs:
                   echo "Application is running on port $PORT."
                   return 0
                 else
-                  echo "Application is not yet running, retrying in 20 seconds..."
+                  echo "Application is not yet running, retrying in 30 seconds..."
                   sleep 30
                 fi
               done
@@ -53,37 +53,28 @@ jobs:
               exit 1
             }
 
+            # 최신 Docker 이미지 가져오기
+            docker pull chany91/bbansrun-be:latest
+
             # 기존 포트 8080 상태 확인
-            if lsof -i:8080 > /dev/null; then
+            if ss -tuln | grep :8080 > /dev/null; then
               echo "Port 8080 is currently in use. Preparing to deploy on port 8081."
               PORT=8081
-            else
-              echo "Port 8080 is free. Deploying on port 8080."
-              PORT=8080
-            fi
-          
-            # 새로운 포트에서 애플리케이션 실행 (8080 또는 8081)
-            if [ $PORT -eq 8080 ]; then
-              echo "Deploying on port 8080 (be-8080)"
-              BACKEND_PORT=8080 docker-compose up -d --no-deps bbansrun-be-8080
-            elif [ $PORT -eq 8081 ]; then
+
+              # 포트 8081에서 애플리케이션 실행
               echo "Deploying on port 8081 (be-8081)"
               BACKEND_PORT=8081 docker-compose up -d --no-deps bbansrun-be-8081
-            fi
-            check_port $PORT
+              check_port 8081
 
-            # 포트가 정상적으로 구동된 후에만 트래픽 전환
-            if [ $PORT -eq 8081 ]; then
-              echo "Starting application on port 8082 for temporary fallback (be-8082)."
+              # 8082에서 임시 준비 및 트래픽 전환
+              echo "Starting application on port 8082 for temporary fallback."
               BACKEND_PORT=8082 docker-compose up -d --no-deps bbansrun-be-8082
               check_port 8082
 
-              # 8080 포트 비우기
-              docker stop be-8080 || true
-              docker rm be-8080 || true
-
               # 8081에서 8080으로 트래픽 전환
               echo "Switching traffic from port 8081 to 8080."
+              docker stop be-8080 || true
+              docker rm be-8080 || true
               BACKEND_PORT=8080 docker-compose up -d --no-deps bbansrun-be-8080
               check_port 8080
 
@@ -91,6 +82,12 @@ jobs:
               echo "Stopping temporary instance on port 8082."
               docker stop be-8082 || true
               docker rm be-8082 || true
+
+            else
+              # 8080 포트가 비어있으면 바로 배포
+              echo "Port 8080 is free. Deploying on port 8080 (be-8080)"
+              BACKEND_PORT=8080 docker-compose up -d --no-deps bbansrun-be-8080
+              check_port 8080
             fi
 
             echo "Deployment completed successfully on port $PORT."
