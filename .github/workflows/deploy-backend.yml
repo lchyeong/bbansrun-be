@@ -56,42 +56,26 @@ jobs:
             # 최신 Docker 이미지 가져오기
             docker pull chany91/bbansrun-be:latest
 
-            # 기존 포트 8080 상태 확인
-            PORT=8080
-            if ss -tuln | grep :8080 > /dev/null; then
+            if ss curl -f http://localhost:8080 > /dev/null; then
               echo "Port 8080 is currently in use. Preparing to deploy on port 8081."
-              PORT=8081
 
               # 포트 8081에서 애플리케이션 실행
               echo "Deploying on port 8081 (be-8081)"
-              BACKEND_PORT=8081 docker-compose up -d --no-deps bbansrun-be-8081
+              docker-compose up -d --no-deps bbansrun-be-8081
               check_port 8081
-
-              # 8082에서 임시 준비 및 트래픽 전환
-              echo "Starting application on port 8082 for temporary fallback."
-              BACKEND_PORT=8082 docker-compose up -d --no-deps bbansrun-be-8082
-              check_port 8082
-
-              # 8081에서 8080으로 트래픽 전환
-              echo "Switching traffic from port 8081 to 8080."
+          
+              # 8080 포트 종료
+              echo "Stopping temporary instance on port 8080."
               docker stop be-8080 || true
               docker rm be-8080 || true
-              BACKEND_PORT=8080 docker-compose up -d --no-deps bbansrun-be-8080
-              check_port 8080
-
-              # 임시로 띄운 8082 포트 종료
-              echo "Stopping temporary instance on port 8082."
-              docker stop be-8082 || true
-              docker rm be-8082 || true
 
             else
               # 8080 포트가 비어있으면 바로 배포
               echo "Port 8080 is free. Deploying on port 8080 (be-8080)"
-              BACKEND_PORT=8080 docker-compose up -d --no-deps bbansrun-be-8080
+              docker-compose up -d --no-deps bbansrun-be-8080
               check_port 8080
             fi
 
-            echo "Deployment completed successfully on port $PORT."
             curl -X POST -H 'Content-Type: application/json' -d '{"content": "배포가 성공적으로 완료되었습니다."}' https://discord.com/api/webhooks/1281072652118655057/QVvLbv-FhwvVuEcTt7CNcd_gq07m-pcI_lf29EHa70or4Dx4BxP6ZXhPBfRZPyZT64ms
 
           EOF
