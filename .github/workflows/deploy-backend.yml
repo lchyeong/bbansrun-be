@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build --cache-from=chany91/bbansrun-be:latest -t chany91/bbansrun-be:latest .
+          docker build -t chany91/bbansrun-be:latest .
           docker push chany91/bbansrun-be:latest
 
       - name: Deploy to server
@@ -35,50 +35,10 @@ jobs:
             set -e
           
             cd /var/www
-            docker-compose up -d --no-deps bbansrun_blue
+          
+            docker pull chany91/bbansrun-be:latest
+            docker-compose up -d --no-deps bbansrun_be_blue
           
             curl -X POST -H 'Content-Type: application/json' -d '{"content": "백엔드 배포가 성공적으로 완료되었습니다." }'  https://discord.com/api/webhooks/1281072652118655057/QVvLbv-FhwvVuEcTt7CNcd_gq07m-pcI_lf29EHa70or4Dx4BxP6ZXhPBfRZPyZT64ms -v
           EOF
           rm deploy_key
-          
-          # 함수 정의: 포트에서 애플리케이션 상태 확인  ->나중에 쿠버네티스 활용해서 재시도
-          #            check_port() {
-          #              local PORT=$1
-          #              for i in 1 2 3; do
-          #                echo "Checking if application is running on port $PORT (Attempt $i/3)..."
-          #                if curl -f http://localhost:$PORT/actuator/health > /dev/null; then
-          #                  echo "Application is running on port $PORT."
-          #                  return 0
-          #                else
-          #                  echo "Application is not yet running, retrying in 30 seconds..."
-          #                  sleep 30
-          #                fi
-          #              done
-          #              echo "Error: Application failed to start on port $PORT after 3 attempts."
-          #              exit 1
-          #            }
-          #
-          #            # 최신 Docker 이미지 가져오기
-          #            docker pull chany91/bbansrun-be:latest
-          
-          #            if ss curl -f http://localhost:8080 > /dev/null; then
-          #              echo "Port 8080 is currently in use. Preparing to deploy on port 8081."
-          #
-          #              # 포트 8081에서 애플리케이션 실행
-          #              echo "Deploying on port 8081 (be-8081)"
-          #              docker-compose up -d --no-deps bbansrun-be-8081
-          #              check_port 8081
-          #
-          #              # 8080 포트 종료
-          #              echo "Stopping temporary instance on port 8080."
-          #              docker stop be-8080 || true
-          #              docker rm be-8080 || true
-          
-          #           else
-          #              # 8080 포트가 비어있으면 바로 배포
-          #             echo "Port 8080 is free. Deploying on port 8080 (be-8080)"
-          #             docker-compose up -d --no-deps bbansrun-be-8080
-          #             check_port 8080
-          #           fi
-               
-               
