@@ -1,5 +1,6 @@
 package com.bbansrun.project1.domain.auth.service;
 
+import com.bbansrun.project1.domain.auth.dto.AuthResponse;
 import com.bbansrun.project1.domain.auth.dto.LoginRequest;
 import com.bbansrun.project1.domain.auth.dto.LoginResponse;
 import com.bbansrun.project1.global.jwt.CustomUserDetails;
@@ -38,6 +39,21 @@ public class AuthService {
 
         // JwtResponse 객체로 사용자 정보와 토큰 반환
         return new LoginResponse(jwtToken, userUuid.toString(), roles);
+    }
+
+    public AuthResponse getAuthInfo(String authorizationHeader) {
+        String token = authorizationHeader.substring(7); // 'Bearer ' 이후의 토큰 추출
+
+        // 토큰에서 UUID와 roles 추출
+        UUID userUuid = jwtTokenProvider.getUserUuid(token);
+        List<String> roles = jwtTokenProvider.getRoles(token);
+
+        // 응답 데이터 생성
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setUserUuid(userUuid.toString());
+        authResponse.setRoles(roles);
+
+        return authResponse;
     }
 
 }
