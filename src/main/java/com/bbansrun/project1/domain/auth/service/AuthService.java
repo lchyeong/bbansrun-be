@@ -1,7 +1,7 @@
 package com.bbansrun.project1.domain.auth.service;
 
 import com.bbansrun.project1.domain.auth.dto.LoginRequest;
-import com.bbansrun.project1.domain.users.repository.UserRepository;
+import com.bbansrun.project1.domain.auth.dto.LoginResponse;
 import com.bbansrun.project1.global.jwt.CustomUserDetails;
 import com.bbansrun.project1.global.jwt.JwtTokenProvider;
 import java.util.List;
@@ -19,9 +19,8 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
 
-    public String login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
         // 사용자 인증 - 실패 시 AuthenticationException이 자동으로 던져짐
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
@@ -35,7 +34,10 @@ public class AuthService {
         // UUID 기반으로 JWT 토큰 발급
         UUID userUuid = customUserDetails.getUserUuid();
         List<String> roles = customUserDetails.getRoles();
-        return jwtTokenProvider.createToken(userUuid, roles);
+        String jwtToken = jwtTokenProvider.createToken(userUuid, roles);
+
+        // JwtResponse 객체로 사용자 정보와 토큰 반환
+        return new LoginResponse(jwtToken, userUuid.toString(), roles);
     }
 
 }

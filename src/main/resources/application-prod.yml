@@ -1,22 +1,27 @@
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
 
-  datasource:
-    url: jdbc:mysql://${PROD_DB_HOST}:${PROD_DB_PORT}/bbansrun
-    username: ${PROD_DB_USERNAME}
-    password: ${PROD_DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
+  sql:
+    init:
+      mode: always
   jpa:
     hibernate:
       ddl-auto: create
     show-sql: true
     open-in-view: false
+    defer-datasource-initialization: true
+
+  datasource:
+    url: ${PROD_DB_URL}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 logging:
   level:
     root: info
-
 
 discord:
   webhook:

@@ -21,7 +21,6 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://jitpack.io") } //dotenv 라이브러리 프로젝트에 추가하기 위해사용
 }
 
 dependencies {
@@ -35,7 +34,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
     runtimeOnly("com.mysql:mysql-connector-j")
-    implementation("com.h2database:h2")
+
+//    implementation("com.h2database:h2")
 
     // 디스코드 관련
     implementation("org.springframework.boot:spring-boot-starter-aop")
@@ -58,10 +58,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail") // 이메일 발송
 
     // JWT 토큰 생성 및 검증
-    implementation("com.auth0:java-jwt:4.4.0")
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
 }
 
 tasks.withType<Test> {

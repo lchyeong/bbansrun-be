@@ -1,5 +1,7 @@
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
 
   datasource:
     url: jdbc:mysql://${DEV_DB_HOST}:${DEV_DB_PORT}/bbansrun

@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -38,6 +40,7 @@ public class SecurityConfig {
                     .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 접근 허용
                     .requestMatchers(("/actuator/**")).permitAll() // actuator 접근 허용
                     .requestMatchers("/public/**").permitAll() // 공개 리소스 허용
+                    .requestMatchers("/auth/**").permitAll() // /api/auth/** 경로는 인증 없이 접근 허용
                     .requestMatchers("/api/public/**").permitAll() // /api/public/** 경로는 인증 없이 접근 허용
                     .requestMatchers("/api/admin/**")
                     .hasRole("ADMIN") // /api/admin/** 경로는 ADMIN 권한 필요
@@ -57,4 +60,10 @@ public class SecurityConfig {
         AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 }
