@@ -40,7 +40,8 @@ public class SecurityConfig {
                     .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 접근 허용
                     .requestMatchers(("/actuator/**")).permitAll() // actuator 접근 허용
                     .requestMatchers("/public/**").permitAll() // 공개 리소스 허용
-                    .requestMatchers("/auth/**").permitAll() // /api/auth/** 경로는 인증 없이 접근 허용
+                    .requestMatchers("/auth/**").permitAll() // /auth/** 경로는 인증 없이 접근 허용
+                    .requestMatchers("/api/**").permitAll() // /api/auth/** 경로는 인증 없이 접근 허용
                     .requestMatchers("/api/public/**").permitAll() // /api/public/** 경로는 인증 없이 접근 허용
                     .requestMatchers("/api/admin/**")
                     .hasRole("ADMIN") // /api/admin/** 경로는 ADMIN 권한 필요
