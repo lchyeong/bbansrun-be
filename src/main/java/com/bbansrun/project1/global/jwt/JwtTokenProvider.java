@@ -38,10 +38,32 @@ public class JwtTokenProvider {
         claims.put("userUuid", userUuid.toString()); // UUID를 문자열로 변환하여 추가
         claims.put("roles", roles); // 역할 리스트 추가
 
+        Date now = new Date();
         return Jwts.builder()
             .claims(claims)
-            .issuedAt(new Date())    // 토큰 생성 시간
-            .expiration(new Date(new Date().getTime() + jwtProperties.getExpiration())) // 토큰 만료 시간
+            .issuedAt(now)    // 토큰 생성 시간
+            .expiration(new Date(now.getTime() + jwtProperties.getExpiration())) // 토큰 만료 시간
+            .signWith(getSigningKey()) // Key와 서명 알고리즘을 설정
+            .compact(); // 토큰 생성
+    }
+
+    /**
+     * JWT 토큰 생성. user_uuid(고유 사용자 ID)와 역할 정보를 포함
+     *
+     * @param userUuid 고유 사용자 ID (UUID)
+     * @param roles    사용자 권한 (ROLE_USER, ROLE_ADMIN)
+     * @return 생성된 JWT 토큰
+     */
+    public String createRefreshToken(UUID userUuid, List<String> roles) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userUuid", userUuid.toString()); // UUID를 문자열로 변환하여 추가
+        claims.put("roles", roles); // 역할 리스트 추가
+        Date now = new Date();
+        return Jwts.builder()
+            .claims(claims)
+            .issuedAt(now)    // 토큰 생성 시간
+            .expiration(
+                new Date(now.getTime() + jwtProperties.getRefreshExpiration())) // 토큰 만료 시간 1주일
             .signWith(getSigningKey()) // Key와 서명 알고리즘을 설정
             .compact(); // 토큰 생성
     }

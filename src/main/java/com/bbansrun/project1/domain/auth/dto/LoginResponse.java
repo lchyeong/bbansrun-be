@@ -9,6 +9,7 @@ import lombok.Getter;
 public class LoginResponse {
 
     private String jwtToken;
+    private String refreshToken;
     private String userUuid;
     private List<String> roles;
 

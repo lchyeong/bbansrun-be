@@ -36,9 +36,9 @@ public class AuthService {
         UUID userUuid = customUserDetails.getUserUuid();
         List<String> roles = customUserDetails.getRoles();
         String jwtToken = jwtTokenProvider.createToken(userUuid, roles);
+        String refreshToken = jwtTokenProvider.createRefreshToken(userUuid, roles);
 
-        // JwtResponse 객체로 사용자 정보와 토큰 반환
-        return new LoginResponse(jwtToken, userUuid.toString(), roles);
+        return new LoginResponse(jwtToken, refreshToken, userUuid.toString(), roles);
     }
 
     public AuthResponse getAuthInfo(String authorizationHeader) {
