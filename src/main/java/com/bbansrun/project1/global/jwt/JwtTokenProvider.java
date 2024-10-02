@@ -58,6 +58,7 @@ public class JwtTokenProvider {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userUuid", userUuid.toString()); // UUID를 문자열로 변환하여 추가
         claims.put("roles", roles); // 역할 리스트 추가
+
         Date now = new Date();
         return Jwts.builder()
             .claims(claims)
@@ -119,4 +120,5 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
 }
