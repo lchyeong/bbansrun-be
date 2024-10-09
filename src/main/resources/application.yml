@@ -1,6 +1,10 @@
 spring:
   application:
     name: bbansrun
+
+  config:
+    import: classpath:application-oauth2.yml
+    
 jwt:
   secret: ${JWT_SECRET}
   expiration: 3600000 # 1 hour

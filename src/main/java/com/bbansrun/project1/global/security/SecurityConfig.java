@@ -22,6 +22,7 @@ public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
     private final JwtTokenFilter jwtTokenFilter;
+    private final OAuth2SuccessCustomHandler oAuth2SuccessCustomHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -51,6 +52,18 @@ public class SecurityConfig {
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않음 (stateless)
+            .oauth2Login(oauth2Login ->
+                oauth2Login
+                    .redirectionEndpoint(redirectionEndpoint ->
+                        redirectionEndpoint
+                            .baseUri("/api/login/oauth2/code/*")) //시큐리티 기본/login 앞에 /api를 붙여 커스텀
+                    .loginProcessingUrl("/api/login/oauth2/code/*")
+                    .authorizationEndpoint(authorizationEndpoint ->
+                        authorizationEndpoint
+                            .baseUri("/api/login/oauth2/authorization")
+                    )
+                    .successHandler(oAuth2SuccessCustomHandler)
+            )
             .addFilterBefore(jwtTokenFilter,
                 UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
         return http.build();
