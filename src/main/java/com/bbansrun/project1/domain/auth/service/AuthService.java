@@ -24,9 +24,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -36,7 +38,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtProperties jwtProperties;
 
-    public LoginResponse login(LoginRequest loginRequest, HttpServletRequest request) {
+    public LoginResponse loginService(LoginRequest loginRequest, HttpServletRequest request) {
         // 사용자 인증 - 실패 시 AuthenticationException이 자동으로 던져짐
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
@@ -61,6 +63,14 @@ public class AuthService {
         saveRefreshToken(refreshToken, userUuid, deviceInfo);
 
         return new LoginResponse(jwtToken, refreshToken, userUuid.toString(), roles);
+    }
+
+    public void logoutService(HttpServletRequest request) {
+        String refreshToken = getRefreshTokenFromCookie(request);
+
+        if (refreshToken != null) {
+            refreshTokenRepository.deleteByToken(refreshToken);
+        }
     }
 
     /**
@@ -97,7 +107,7 @@ public class AuthService {
             //생성자를 통해 토큰 생성
             RefreshToken refreshToken = new RefreshToken(token,
                 LocalDateTime.now().plus(jwtProperties.getRefreshExpiration(), ChronoUnit.MILLIS),
-                deviceInfo, user);
+                deviceInfo, user, true);
 
             refreshTokenRepository.save(refreshToken);
         } else {

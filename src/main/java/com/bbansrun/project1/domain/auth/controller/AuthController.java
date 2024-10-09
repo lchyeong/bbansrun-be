@@ -36,7 +36,7 @@ public class AuthController {
         HttpServletResponse response) {
 
         // AuthService 통해 인증하고 JWT 토큰 생성
-        LoginResponse loginResponse = authService.login(loginRequest, request);
+        LoginResponse loginResponse = authService.loginService(loginRequest, request);
 
         // JWT 토큰을 Authorization 헤더에 추가
         HttpHeaders headers = new HttpHeaders();
@@ -59,7 +59,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        authService.logoutService(request);
 
         // 1. 리프레시 토큰 쿠키 만료
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", "")

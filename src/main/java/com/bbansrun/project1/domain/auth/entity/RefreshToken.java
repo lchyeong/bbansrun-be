@@ -38,12 +38,17 @@ public class RefreshToken {
     @Column
     private String deviceInfo;  // 기기 정보
 
+    @Column(nullable = false)
+    private boolean isExpired;
+
     @Builder
-    public RefreshToken(String token, LocalDateTime expiryDate, String deviceInfo, User user) {
+    public RefreshToken(String token, LocalDateTime expiryDate, String deviceInfo, User user,
+        boolean isExpired) {
         this.token = token;
         this.expiryDate = expiryDate;
         this.deviceInfo = deviceInfo;
         this.user = user;
+        this.isExpired = isExpired;
     }
 
 }
