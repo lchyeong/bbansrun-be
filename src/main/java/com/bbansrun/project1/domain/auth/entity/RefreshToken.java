@@ -10,12 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "refresh_tokens")
 public class RefreshToken {
 
@@ -31,13 +33,13 @@ public class RefreshToken {
     private String token;
 
     @Column(nullable = false)
-    private Instant expiryDate;
+    private LocalDateTime expiryDate;
 
-    @Column(nullable = true)
+    @Column
     private String deviceInfo;  // 기기 정보
 
     @Builder
-    public RefreshToken(String token, Instant expiryDate, String deviceInfo, User user) {
+    public RefreshToken(String token, LocalDateTime expiryDate, String deviceInfo, User user) {
         this.token = token;
         this.expiryDate = expiryDate;
         this.deviceInfo = deviceInfo;

@@ -12,7 +12,8 @@ import com.bbansrun.project1.global.jwt.JwtProperties;
 import com.bbansrun.project1.global.jwt.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -63,10 +64,7 @@ public class AuthService {
     }
 
     /**
-     * Refresh 토큰을 이용하여 JWT 토큰 재발급
-     *
-     * @param refreshToken Refresh 토큰
-     * @return 새로 발급된 JWT 토큰
+     * Refresh 토큰을 이용하여 JWT 토큰 재발급 return 새로 발급된 JWT 토큰
      */
     public String refreshAccessToken(HttpServletRequest request) {
         String refreshToken = getRefreshTokenFromCookie(request);
@@ -96,13 +94,10 @@ public class AuthService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            // 빌더 패턴으로 리프레시 토큰 생성
-            RefreshToken refreshToken = RefreshToken.builder()
-                .token(token)
-                .expiryDate(Instant.now().plusMillis(jwtProperties.getRefreshExpiration()))
-                .deviceInfo(deviceInfo)
-                .user(user)
-                .build();
+            //생성자를 통해 토큰 생성
+            RefreshToken refreshToken = new RefreshToken(token,
+                LocalDateTime.now().plus(jwtProperties.getRefreshExpiration(), ChronoUnit.MILLIS),
+                deviceInfo, user);
 
             refreshTokenRepository.save(refreshToken);
         } else {
