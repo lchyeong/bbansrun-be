@@ -42,6 +42,7 @@ public class SecurityConfig {
                     .requestMatchers(("/actuator/**")).permitAll() // actuator 접근 허용
                     .requestMatchers("/public/**").permitAll() // 공개 리소스 허용
                     .requestMatchers("/auth/**").permitAll() // /auth/** 경로는 인증 없이 접근 허용
+                    .requestMatchers("/auth/login").permitAll() // /auth/login 경로는 인증 없이 접근 허용
                     .requestMatchers("/api/**").permitAll() // /api/auth/** 경로는 인증 없이 접근 허용
                     .requestMatchers("/api/public/**").permitAll() // /api/public/** 경로는 인증 없이 접근 허용
                     .requestMatchers("/api/admin/**")

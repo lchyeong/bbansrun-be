@@ -51,7 +51,7 @@ public class AuthController {
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken",
                 loginResponse.getRefreshToken())
             .httpOnly(true) // 클라이언트에서 접근 불가
-            .secure(true) // HTTPS에서만 전송 -> 개발 환경에서는 false
+            .secure(secureFlag) // HTTPS에서만 전송 -> 개발 환경에서는 false
             .path("/") // 루트 경로에서만 유효
             .maxAge(jwtProperties.getRefreshExpiration() / 1000) // 만료 시간 (밀리초 -> 초)
             .sameSite("Strict") // CSRF 방지

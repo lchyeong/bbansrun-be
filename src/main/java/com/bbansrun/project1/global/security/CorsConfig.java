@@ -15,7 +15,6 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:5173");
         config.addAllowedOrigin("https://bbansrun.site");
-        config.addAllowedOrigin("https://bbansrun.site:5173");// 추가 허용 도메인
         config.addAllowedHeader("Authorization");
         config.addAllowedHeader("Content-Type");
         config.addAllowedMethod("GET");
