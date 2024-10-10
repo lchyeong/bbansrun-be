@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
+    //근데 이게 로컬환경에서는 의미가 없는 설정 같음. 해보니까 로컬에서도 true 일때도 적용이됨
     @Value("${secure.cookie}")
     private boolean secureFlag;
 
@@ -50,7 +51,7 @@ public class AuthController {
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken",
                 loginResponse.getRefreshToken())
             .httpOnly(true) // 클라이언트에서 접근 불가
-            .secure(secureFlag) // HTTPS에서만 전송 -> 개발 환경에서는 false
+            .secure(true) // HTTPS에서만 전송 -> 개발 환경에서는 false
             .path("/") // 루트 경로에서만 유효
             .maxAge(jwtProperties.getRefreshExpiration() / 1000) // 만료 시간 (밀리초 -> 초)
             .sameSite("Strict") // CSRF 방지
