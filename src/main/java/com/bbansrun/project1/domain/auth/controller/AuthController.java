@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
+
+    @Value("${secure.cookie}")
+    private boolean secureFlag;
 
     private final AuthService authService;
     private final JwtProperties jwtProperties;
@@ -46,7 +50,7 @@ public class AuthController {
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken",
                 loginResponse.getRefreshToken())
             .httpOnly(true) // 클라이언트에서 접근 불가
-            .secure(false) // HTTPS에서만 전송 -> 개발 환경에서는 false
+            .secure(secureFlag) // HTTPS에서만 전송 -> 개발 환경에서는 false
             .path("/") // 루트 경로에서만 유효
             .maxAge(jwtProperties.getRefreshExpiration() / 1000) // 만료 시간 (밀리초 -> 초)
             .sameSite("Strict") // CSRF 방지

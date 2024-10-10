@@ -3,18 +3,25 @@ spring:
     activate:
       on-profile: dev
 
-  datasource:
-    url: jdbc:mysql://${DEV_DB_HOST}:${DEV_DB_PORT}/bbansrun
-    username: ${DEV_DB_USERNAME}
-    password: ${DEV_DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
+  sql:
+    init:
+      mode: always
   jpa:
     hibernate:
       ddl-auto: create
     show-sql: true
     open-in-view: false
+    defer-datasource-initialization: true
+
+  datasource:
+    url: ${DEV_DB_URL}
+    username: ${DEV_DB_USERNAME}
+    password: ${DEV_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 logging:
   level:
-    root: debug
+    root: info
+
+secure:
+  cookie: false
