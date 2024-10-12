@@ -24,11 +24,11 @@ public class RegionCategoryController {
         return ResponseEntity.ok(regionCategoryService.getAllRegions());
     }
 
-    @GetMapping("/path")
-    public ResponseEntity<List<RegionCategoryResponse>> findByRegionPathStartingWith(
+    @GetMapping("/code")
+    public ResponseEntity<List<RegionCategoryResponse>> findByRegionCodeStartingWith(
         @RequestBody RegionCategoryRequest request) {
 
-        List<RegionCategoryResponse> regions = regionCategoryService.getRegionsByPath(request);
+        List<RegionCategoryResponse> regions = regionCategoryService.getRegionsByCode(request);
         return ResponseEntity.ok(regions);
     }
 }

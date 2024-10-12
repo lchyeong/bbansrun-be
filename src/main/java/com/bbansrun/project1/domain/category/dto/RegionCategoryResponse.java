@@ -11,5 +11,4 @@ public class RegionCategoryResponse {
 
     private String regionName;
     private String regionCode;
-    private String regionPath;
 }

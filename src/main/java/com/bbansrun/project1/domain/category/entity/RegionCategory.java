@@ -25,7 +25,6 @@ public class RegionCategory {
 
     private String regionName;
     private String regionCode;
-    private String regionPath;
 
     @JsonIgnore
     @OneToMany(mappedBy = "parentRegion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

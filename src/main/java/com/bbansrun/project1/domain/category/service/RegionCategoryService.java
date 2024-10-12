@@ -31,18 +31,17 @@ public class RegionCategoryService {
     /**
      * 특정 경로를 기준으로 하위 지역 정보를 조회한다.
      *
-     * @param path 특정 경로
+     * @param code 특정 경로
      * @return 하위 지역 정보 리스트
      */
-    public List<RegionCategoryResponse> getRegionsByPath(RegionCategoryRequest request) {
-        List<RegionCategory> regions = regionCategoryRepository.findByRegionPathStartingWith(
-            request.getRegionPath());
+    public List<RegionCategoryResponse> getRegionsByCode(RegionCategoryRequest request) {
+        List<RegionCategory> regions = regionCategoryRepository.findByRegionCodeStartingWith(
+            request.getRegionCode());
 
         return regions.stream()
             .map(region -> new RegionCategoryResponse(
                 region.getRegionName(),
-                region.getRegionCode(),
-                region.getRegionPath()))
+                region.getRegionCode()))
             .collect(Collectors.toList());
     }
 }

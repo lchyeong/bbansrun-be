@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegionCategoryRequest {
 
-    private String regionPath;
+    private String regionCode;
 }

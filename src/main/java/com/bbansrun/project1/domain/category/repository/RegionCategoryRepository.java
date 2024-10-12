@@ -16,7 +16,8 @@ public interface RegionCategoryRepository extends JpaRepository<RegionCategory, 
 
     @Query("select r "
         + "from RegionCategory r "
-        + "where r.regionPath "
-        + "like :path%")
-    List<RegionCategory> findByRegionPathStartingWith(@Param("path") String path);
+        + "where r.regionCode = :code "
+        + "or r.regionCode "
+        + "like CONCAT(:code, '-%')")
+    List<RegionCategory> findByRegionCodeStartingWith(@Param("code") String code);
 }
