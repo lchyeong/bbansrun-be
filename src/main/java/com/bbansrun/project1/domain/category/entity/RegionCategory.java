@@ -1,7 +1,9 @@
 package com.bbansrun.project1.domain.category.entity;
 
+import com.bbansrun.project1.domain.post.entity.RegionPost;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,8 +25,13 @@ public class RegionCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String regionName;
+
+    @Column(nullable = false)
     private String regionNameEng;
+
+    @Column(nullable = false)
     private String regionCode;
 
     @JsonIgnore
@@ -34,4 +41,7 @@ public class RegionCategory {
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private RegionCategory parentRegion;
+
+    @OneToMany(mappedBy = "regionCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<RegionPost> regionPosts;
 }
