@@ -24,6 +24,7 @@ public class RegionCategory {
     private Long id;
 
     private String regionName;
+    private String regionNameEng;
     private String regionCode;
 
     @JsonIgnore
