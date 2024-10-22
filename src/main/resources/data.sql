@@ -123,3 +123,53 @@ VALUES (1001, '가양동', 'Gayang-dong', '11-500-5200', 104),
        (1008, '내발산동', 'Naebalsan-dong', '11-500-6510', 104),
        (1009, '외발산동', 'Oebalsan-dong', '11-500-6520', 104),
        (1010, '공항동', 'Gonghang-dong', '11-500-6200', 104);
+
+-- 가양동 (1001)
+INSERT INTO region_post (id, title, content, region_category_id)
+VALUES (1, '가양동 포스트 1', '가양동 포스트 내용 1', 1001),
+       (2, '가양동 포스트 2', '가양동 포스트 내용 2', 1001);
+
+-- 등촌동 (1002)
+INSERT INTO region_post (id, title, content, region_category_id)
+VALUES (3, '등촌동 포스트 1', '등촌동 포스트 내용 1', 1002),
+       (4, '등촌동 포스트 2', '등촌동 포스트 내용 2', 1002);
+
+-- 화곡동 (1003)
+INSERT INTO region_post (id, title, content, region_category_id)
+VALUES (5, '화곡동 포스트 1', '화곡동 포스트 내용 1', 1003),
+       (6, '화곡동 포스트 2', '화곡동 포스트 내용 2', 1003);
+
+-- 발산동 (1004)
+INSERT INTO region_post (id, title, content, region_category_id)
+VALUES (7, '발산동 포스트 1', '발산동 포스트 내용 1', 1004),
+       (8, '발산동 포스트 2', '발산동 포스트 내용 2', 1004);
+
+-- 방화동 (1005)
+INSERT INTO region_post (id, title, content, region_category_id)
+VALUES (9, '방화동 포스트 1', '방화동 포스트 내용 1', 1005),
+       (10, '방화동 포스트 2', '방화동 포스트 내용 2', 1005);
+
+-- 마곡동 (1006)
+INSERT INTO region_post (id, title, content, region_category_id)
+VALUES (11, '마곡동 포스트 1', '마곡동 포스트 내용 1', 1006),
+       (12, '마곡동 포스트 2', '마곡동 포스트 내용 2', 1006);
+
+-- 염창동 (1007)
+INSERT INTO region_post (id, title, content, region_category_id)
+VALUES (13, '염창동 포스트 1', '염창동 포스트 내용 1', 1007),
+       (14, '염창동 포스트 2', '염창동 포스트 내용 2', 1007);
+
+-- 내발산동 (1008)
+INSERT INTO region_post (id, title, content, region_category_id)
+VALUES (15, '내발산동 포스트 1', '내발산동 포스트 내용 1', 1008),
+       (16, '내발산동 포스트 2', '내발산동 포스트 내용 2', 1008);
+
+-- 외발산동 (1009)
+INSERT INTO region_post (id, title, content, region_category_id)
+VALUES (17, '외발산동 포스트 1', '외발산동 포스트 내용 1', 1009),
+       (18, '외발산동 포스트 2', '외발산동 포스트 내용 2', 1009);
+
+-- 공항동 (1010)
+INSERT INTO region_post (id, title, content, region_category_id)
+VALUES (19, '공항동 포스트 1', '공항동 포스트 내용 1', 1010),
+       (20, '공항동 포스트 2', '공항동 포스트 내용 2', 1010);
