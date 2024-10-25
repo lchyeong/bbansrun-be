@@ -7,6 +7,8 @@ import com.bbansrun.project1.domain.auth.entity.RefreshToken;
 import com.bbansrun.project1.domain.auth.repository.RefreshTokenRepository;
 import com.bbansrun.project1.domain.users.entity.User;
 import com.bbansrun.project1.domain.users.repository.UserRepository;
+import com.bbansrun.project1.global.exception.ApiException;
+import com.bbansrun.project1.global.exception.ErrorCode;
 import com.bbansrun.project1.global.jwt.CustomUserDetails;
 import com.bbansrun.project1.global.jwt.JwtProperties;
 import com.bbansrun.project1.global.jwt.JwtTokenProvider;
@@ -15,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,37 +40,47 @@ public class AuthService {
     private final JwtProperties jwtProperties;
 
     public LoginResponse loginService(LoginRequest loginRequest, HttpServletRequest request) {
-        // 사용자 인증 - 실패 시 AuthenticationException이 자동으로 던져짐
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
-                loginRequest.getPassword())
-        );
+        try {
+            // 사용자 인증 - 실패 시 AuthenticationException이 자동으로 던져짐
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+                            loginRequest.getPassword())
+            );
 
-        // 인증 성공 후 사용자 정보를 가져옴
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+            // 인증 성공 후 사용자 정보를 가져옴
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
 
-        // UUID 기반으로 JWT 토큰 발급
-        UUID userUuid = customUserDetails.getUserUuid();
-        List<String> roles = customUserDetails.getRoles();
+            // UUID 기반으로 JWT 토큰 발급
+            UUID userUuid = customUserDetails.getUserUuid();
+            List<String> roles = customUserDetails.getRoles();
 
-        // JWT 및 Refresh 토큰 생성
-        String jwtToken = jwtTokenProvider.createToken(userUuid, roles);
-        String refreshToken = jwtTokenProvider.createRefreshToken(userUuid, roles);
+            // JWT 및 Refresh 토큰 생성
+            String jwtToken = jwtTokenProvider.createToken(userUuid, roles);
+            String refreshToken = jwtTokenProvider.createRefreshToken(userUuid, roles);
 
-        // User-Agent를 기기 정보로 사용
-        String deviceInfo = request.getHeader("User-Agent");
-        log.info("Device info: {}", deviceInfo);
-        saveRefreshToken(refreshToken, userUuid, deviceInfo);
+            // User-Agent를 기기 정보로 사용
+            String deviceInfo = request.getHeader("User-Agent");
+            log.info("Device info: {}", deviceInfo);
+            saveRefreshToken(refreshToken, userUuid, deviceInfo);
 
-        return new LoginResponse(jwtToken, refreshToken, userUuid.toString(), roles);
+            return new LoginResponse(jwtToken, refreshToken, userUuid.toString(), roles);
+        } catch (Exception e) {
+            log.error("Login failed for email: {}", loginRequest.getEmail(), e);
+            throw new ApiException(ErrorCode.INVALID_CREDENTIALS);
+        }
     }
 
     public void logoutService(HttpServletRequest request) {
-        String refreshToken = getRefreshTokenFromCookie(request);
+        try {
+            String refreshToken = getRefreshTokenFromCookie(request);
 
-        if (refreshToken != null) {
-            refreshTokenRepository.deleteByToken(refreshToken);
+            if (refreshToken != null) {
+                refreshTokenRepository.deleteByToken(refreshToken);
+            }
+        } catch (Exception e) {
+            log.error("Error during logout", e);
+            throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -77,18 +88,27 @@ public class AuthService {
      * Refresh 토큰을 이용하여 JWT 토큰 재발급 return 새로 발급된 JWT 토큰
      */
     public String refreshAccessToken(HttpServletRequest request) {
-        String refreshToken = getRefreshTokenFromCookie(request);
+        try {
+            String refreshToken = getRefreshTokenFromCookie(request);
 
-        if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
+            if (refreshToken == null) {
+                throw new ApiException(ErrorCode.REFRESH_TOKEN_INVALID);
+            }
+            if (!jwtTokenProvider.validateToken(refreshToken)) {
+                throw new ApiException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+            }
+
             // 리프레시 토큰이 유효하면 새로운 액세스 토큰 발급
             UUID userUuid = jwtTokenProvider.getUserUuid(refreshToken);
             List<String> roles = jwtTokenProvider.getRoles(refreshToken);
 
-            // 새로운 액세스 토큰 생성
             return jwtTokenProvider.createToken(userUuid, roles);
-        } else {
-            throw new IllegalArgumentException(
-                "Refresh token expired or invalid. Please log in again.");
+        } catch (ApiException e) {
+            log.error("Refresh token invalid or expired.", e);
+            throw e;  // 이미 적절한 ApiException이 발생했으므로 다시 던짐
+        } catch (Exception e) {
+            log.error("Unexpected error during token refresh.", e);
+            throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -99,35 +119,39 @@ public class AuthService {
      * @param userUuid UUID로 사용자 조회 후 리프레시 토큰 저장
      */
     private void saveRefreshToken(String token, UUID userUuid, String deviceInfo) {
-        Optional<User> userOptional = userRepository.findByUserUuid(userUuid);
+        try {
+            User user = userRepository.findByUserUuid(userUuid)
+                    .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-
-            //생성자를 통해 토큰 생성
             RefreshToken refreshToken = new RefreshToken(token,
-                LocalDateTime.now().plus(jwtProperties.getRefreshExpiration(), ChronoUnit.MILLIS),
-                deviceInfo, user, true);
+                    LocalDateTime.now().plus(jwtProperties.getRefreshExpiration(), ChronoUnit.MILLIS),
+                    deviceInfo, user, true);
 
             refreshTokenRepository.save(refreshToken);
-        } else {
-            throw new IllegalArgumentException("User not found with UUID: " + userUuid);
+        } catch (Exception e) {
+            log.error("Error saving refresh token for user UUID: {}", userUuid, e);
+            throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
     public AuthResponse getAuthInfo(String authorizationHeader) {
-        String token = authorizationHeader.substring(7); // 'Bearer ' 이후의 토큰 추출
+        try {
+            String token = authorizationHeader.substring(7); // 'Bearer ' 이후의 토큰 추출
 
-        // 토큰에서 UUID와 roles 추출
-        UUID userUuid = jwtTokenProvider.getUserUuid(token);
-        List<String> roles = jwtTokenProvider.getRoles(token);
+            // 토큰에서 UUID와 roles 추출
+            UUID userUuid = jwtTokenProvider.getUserUuid(token);
+            List<String> roles = jwtTokenProvider.getRoles(token);
 
-        // 응답 데이터 생성
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setUserUuid(userUuid.toString());
-        authResponse.setRoles(roles);
+            // 응답 데이터 생성
+            AuthResponse authResponse = new AuthResponse();
+            authResponse.setUserUuid(userUuid.toString());
+            authResponse.setRoles(roles);
 
-        return authResponse;
+            return authResponse;
+        } catch (Exception e) {
+            log.error("Error retrieving auth info", e);
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
     }
 
     public String getRefreshTokenFromCookie(HttpServletRequest request) {
