@@ -33,7 +33,6 @@ public class User {
     private String email;
     private String password;
 
-    // RefreshToken과의 다대일 관계 설정 (1명의 사용자 -> 여러 개의 리프레시 토큰)
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RefreshToken> refreshTokens;
 

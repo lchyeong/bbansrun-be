@@ -71,6 +71,7 @@ public class AuthService {
         }
     }
 
+
     public void logoutService(HttpServletRequest request) {
         try {
             String refreshToken = getRefreshTokenFromCookie(request);

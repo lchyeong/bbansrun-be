@@ -29,8 +29,7 @@ public enum ErrorCode {
     USER_ACCOUNT_LOCKED(HttpStatus.FORBIDDEN, 403, "L002", "User account is locked"),
     USER_ACCOUNT_DISABLED(HttpStatus.FORBIDDEN, 403, "L003", "User account is disabled"),
     REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, 401, "L004", "Refresh token expired"),
-    REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, 401, "L005", "Invalid refresh token");
-
+    REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, 401, "L005", "Invalid refresh token"),
 
     private final HttpStatus status;
     private final int statusCode;

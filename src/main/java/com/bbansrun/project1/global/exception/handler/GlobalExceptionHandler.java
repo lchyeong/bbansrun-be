@@ -18,11 +18,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(ApiException e) {
-        // 로그에 에러 메시지 기록
         log.error("Error occurred: {} - {}", e.getErrorCode().getCode(),
-            e.getErrorCode().getMessage());
-
-        // 클라이언트에는 메시지 없이 상태 정보만 전달
+                e.getErrorCode().getMessage());
         ErrorResponse response = ErrorResponse.of(e.getErrorCode());
         return new ResponseEntity<>(response, e.getErrorCode().getStatus());
     }
@@ -38,7 +35,7 @@ public class GlobalExceptionHandler {
     // HTTP 메서드가 지원되지 않는 경우
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
-        HttpRequestMethodNotSupportedException e) {
+            HttpRequestMethodNotSupportedException e) {
         log.error("Request method not supported: {}", e.getMessage());
         ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
         return new ResponseEntity<>(response, ErrorCode.METHOD_NOT_ALLOWED.getStatus());
@@ -47,7 +44,7 @@ public class GlobalExceptionHandler {
     // 지원되지 않는 미디어 타입 요청 시
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupportedException(
-        HttpMediaTypeNotSupportedException e) {
+            HttpMediaTypeNotSupportedException e) {
         log.error("Media type not supported: {}", e.getMessage());
         ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_TYPE_VALUE);
         return new ResponseEntity<>(response, ErrorCode.INVALID_TYPE_VALUE.getStatus());
@@ -56,7 +53,7 @@ public class GlobalExceptionHandler {
     // 필수 요청 파라미터가 누락된 경우
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(
-        MissingServletRequestParameterException e) {
+            MissingServletRequestParameterException e) {
         log.error("Missing request parameter: {}", e.getParameterName());
         ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
         return new ResponseEntity<>(response, ErrorCode.INVALID_INPUT_VALUE.getStatus());
