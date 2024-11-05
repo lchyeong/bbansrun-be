@@ -1,4 +1,4 @@
-package com.bbansrun.project1.domain.auth.util;
+package com.bbansrun.project1.global.util;
 
 import com.bbansrun.project1.global.jwt.JwtProperties;
 import jakarta.servlet.http.Cookie;

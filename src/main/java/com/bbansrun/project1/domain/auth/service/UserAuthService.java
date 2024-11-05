@@ -1,6 +1,6 @@
 package com.bbansrun.project1.domain.auth.service;
 
-import static com.bbansrun.project1.domain.auth.util.CookieUtil.getRefreshTokenFromCookie;
+import static com.bbansrun.project1.global.util.CookieUtil.getRefreshTokenFromCookie;
 
 import com.bbansrun.project1.domain.auth.dto.LoginRequest;
 import com.bbansrun.project1.domain.auth.dto.LoginResponse;

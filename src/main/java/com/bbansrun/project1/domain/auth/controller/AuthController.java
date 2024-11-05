@@ -1,14 +1,14 @@
 package com.bbansrun.project1.domain.auth.controller;
 
-import static com.bbansrun.project1.domain.auth.util.HeaderUtil.setTokenInHeader;
+import static com.bbansrun.project1.global.util.HeaderUtil.setTokenInHeader;
 
 import com.bbansrun.project1.domain.auth.dto.LoginRequest;
 import com.bbansrun.project1.domain.auth.dto.LoginResponse;
 import com.bbansrun.project1.domain.auth.service.TokenService;
 import com.bbansrun.project1.domain.auth.service.UserAuthService;
-import com.bbansrun.project1.domain.auth.util.CookieUtil;
 import com.bbansrun.project1.domain.users.dto.UserInfoDto;
 import com.bbansrun.project1.global.exception.ApiException;
+import com.bbansrun.project1.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

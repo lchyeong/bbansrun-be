@@ -1,15 +1,15 @@
 package com.bbansrun.project1.domain.auth.service;
 
-import static com.bbansrun.project1.domain.auth.util.CookieUtil.getRefreshTokenFromCookie;
+import static com.bbansrun.project1.global.util.CookieUtil.getRefreshTokenFromCookie;
 
 import com.bbansrun.project1.domain.auth.entity.RefreshToken;
 import com.bbansrun.project1.domain.auth.repository.RefreshTokenRepository;
-import com.bbansrun.project1.domain.auth.util.HeaderUtil;
 import com.bbansrun.project1.domain.users.entity.User;
 import com.bbansrun.project1.global.exception.ApiException;
 import com.bbansrun.project1.global.exception.ErrorCode;
 import com.bbansrun.project1.global.jwt.JwtProperties;
 import com.bbansrun.project1.global.jwt.JwtTokenProvider;
+import com.bbansrun.project1.global.util.HeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
