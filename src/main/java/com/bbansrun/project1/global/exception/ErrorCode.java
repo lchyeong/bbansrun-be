@@ -24,12 +24,13 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "U001", "User not found"),
     INVALID_USER_PASSWORD(HttpStatus.BAD_REQUEST, 400, "U002", "Invalid user password"),
 
+
     // 로그인 및 로그아웃 관련 에러
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, 401, "L001", "Invalid credentials provided"),
     USER_ACCOUNT_LOCKED(HttpStatus.FORBIDDEN, 403, "L002", "User account is locked"),
     USER_ACCOUNT_DISABLED(HttpStatus.FORBIDDEN, 403, "L003", "User account is disabled"),
     REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, 401, "L004", "Refresh token expired"),
-    REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, 401, "L005", "Invalid refresh token"),
+    REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, 401, "L005", "Invalid refresh token");
 
     private final HttpStatus status;
     private final int statusCode;

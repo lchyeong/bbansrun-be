@@ -36,19 +36,18 @@ public class RefreshToken {
     private LocalDateTime expiryDate;
 
     @Column
-    private String deviceInfo;  // 기기 정보
+    private String deviceInfo;
 
     @Column(nullable = false)
-    private boolean isExpired;
+    private boolean isActive;
 
     @Builder
     public RefreshToken(String token, LocalDateTime expiryDate, String deviceInfo, User user,
-        boolean isExpired) {
+                        boolean isActive) {
         this.token = token;
         this.expiryDate = expiryDate;
         this.deviceInfo = deviceInfo;
         this.user = user;
-        this.isExpired = isExpired;
+        this.isActive = isActive;
     }
-
 }

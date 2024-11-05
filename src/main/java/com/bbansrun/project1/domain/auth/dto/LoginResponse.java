@@ -1,16 +1,15 @@
 package com.bbansrun.project1.domain.auth.dto;
 
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LoginResponse {
 
-    private String jwtToken;
-    private String refreshToken;
-    private String userUuid;
-    private List<String> roles;
-
+    private final String jwtToken;
+    private final String refreshToken;
+    private final String userUuid;
+    private final List<String> roles;
 }
