@@ -52,7 +52,7 @@ public class UserAuthService {
             return new LoginResponse(jwtToken, refreshToken, customUserDetails.getUserUuid().toString(),
                     customUserDetails.getRoles());
         } catch (Exception e) {
-            log.error("Login failed for email: {}", loginRequest.getEmail(), e);
+            log.error("로그인 실패: 이메일 {}", loginRequest.getEmail(), e);
             throw new ApiException(ErrorCode.INVALID_CREDENTIALS);
         }
     }
@@ -65,7 +65,7 @@ public class UserAuthService {
                 refreshTokenRepository.deleteByToken(refreshToken);
             }
         } catch (Exception e) {
-            log.error("Error during logout", e);
+            log.error("로그아웃 중 오류 발생", e);
             throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
@@ -79,7 +79,7 @@ public class UserAuthService {
 
             return new UserInfoDto(userUuid, roles);
         } catch (Exception e) {
-            log.error("Error retrieving auth info", e);
+            log.error("인증 정보 조회 중 오류 발생", e);
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
     }
@@ -87,8 +87,8 @@ public class UserAuthService {
     private String getDeviceInfo(HttpServletRequest request) {
         String userAgent = request.getHeader("User-Agent");
         if (userAgent == null) {
-            log.warn("User-Agent header is unknown");
-            return "Unknown Device";
+            log.warn("User-Agent 헤더를 찾을 수 없습니다.");
+            return "알 수 없는 장치";
         }
         return userAgent;
     }
@@ -103,7 +103,7 @@ public class UserAuthService {
             );
             return (CustomUserDetails) authentication.getPrincipal();
         } catch (AuthenticationException e) {
-            log.error("Authentication failed for user: {}", loginRequest.getEmail(), e);
+            log.error("사용자 인증 실패: 이메일 {}", loginRequest.getEmail(), e);
             throw new ApiException(ErrorCode.INVALID_CREDENTIALS);
         }
     }

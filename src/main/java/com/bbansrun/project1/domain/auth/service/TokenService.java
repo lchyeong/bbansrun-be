@@ -4,6 +4,7 @@ import static com.bbansrun.project1.domain.auth.util.CookieUtil.getRefreshTokenF
 
 import com.bbansrun.project1.domain.auth.entity.RefreshToken;
 import com.bbansrun.project1.domain.auth.repository.RefreshTokenRepository;
+import com.bbansrun.project1.domain.auth.util.HeaderUtil;
 import com.bbansrun.project1.domain.users.entity.User;
 import com.bbansrun.project1.global.exception.ApiException;
 import com.bbansrun.project1.global.exception.ErrorCode;
@@ -46,7 +47,7 @@ public class TokenService {
                             jwtTokenProvider.getRoles(refreshToken)
                     );
         } catch (Exception e) {
-            log.error("Unexpected error during token refresh.", e);
+            log.error("토큰 갱신 중 예상치 못한 오류가 발생했습니다.", e);
             throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
@@ -55,7 +56,7 @@ public class TokenService {
         try {
             refreshTokenRepository.save(createRefreshToken(refreshToken, user, deviceInfo));
         } catch (Exception e) {
-            log.error("Error saving refresh token", e);
+            log.error("리프레시 토큰 저장 중 오류가 발생했습니다.", e);
             throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
@@ -70,8 +71,7 @@ public class TokenService {
     }
 
     public ResponseEntity<String> buildTokenResponse(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
+        HttpHeaders headers = HeaderUtil.setTokenInHeader(token);
         return new ResponseEntity<>(token, headers, HttpStatus.OK);
     }
 }
