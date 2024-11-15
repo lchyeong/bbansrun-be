@@ -24,7 +24,7 @@ public class CorsConfig {
         config.addExposedHeader("Authorization");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // 모든 경로에 대해 설정 적용
+        source.registerCorsConfiguration("/**", config);
 
         return source;
     }

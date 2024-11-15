@@ -5,14 +5,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
 @Slf4j
+@RestController
 @RequestMapping("/api")
 public class UserController {
 
-//    @GetMapping("/auth-info")
-//    public ResponseEntity<?> getAuthInfo() {
-//
-//        return ResponseEntity.ok(authResponse);
-//    }
 }
