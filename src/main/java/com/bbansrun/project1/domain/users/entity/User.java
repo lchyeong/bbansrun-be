@@ -15,10 +15,15 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -39,4 +44,12 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private List<Role> roles;
+
+    @Builder
+    public User(UUID userUuid, String email, String password, List<Role> roles) {
+        this.userUuid = userUuid;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
 }
