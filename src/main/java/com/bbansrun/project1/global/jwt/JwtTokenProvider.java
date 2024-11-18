@@ -26,10 +26,11 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(UUID userUuid, List<String> roles) {
+    public String createToken(UUID userUuid, String nickName, List<String> roles) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userUuid", userUuid.toString());
         claims.put("roles", roles);
+        claims.put("nickName", nickName);
 
         Date now = new Date();
         return Jwts.builder()
@@ -40,10 +41,11 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createRefreshToken(UUID userUuid, List<String> roles) {
+    public String createRefreshToken(UUID userUuid, String nickName, List<String> roles) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userUuid", userUuid.toString());
         claims.put("roles", roles);
+        claims.put("nickName", nickName);
 
         Date now = new Date();
         return Jwts.builder()
@@ -77,6 +79,15 @@ public class JwtTokenProvider {
                 .filter(role -> role instanceof String)
                 .map(role -> (String) role)
                 .collect(Collectors.toList());
+    }
+
+    public String getNickname(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("nickName", String.class);
     }
 
     public boolean validateToken(String token) {

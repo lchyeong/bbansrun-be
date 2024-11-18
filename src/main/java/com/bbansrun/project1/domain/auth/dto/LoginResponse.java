@@ -10,6 +10,7 @@ public class LoginResponse {
 
     private final String jwtToken;
     private final String refreshToken;
+    private final String nickName;
     private final String userUuid;
     private final List<String> roles;
 }

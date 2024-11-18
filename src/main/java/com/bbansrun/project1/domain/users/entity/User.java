@@ -31,6 +31,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String nickName;
+
     @Column(nullable = false, updatable = false, unique = true)
     private UUID userUuid;
 

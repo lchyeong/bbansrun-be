@@ -27,6 +27,10 @@ public class CustomUserDetails implements UserDetails {
         return roles;
     }
 
+    public String getNickName() {
+        return user.getNickName();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getRoles();

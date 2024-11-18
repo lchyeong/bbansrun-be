@@ -10,5 +10,6 @@ import lombok.RequiredArgsConstructor;
 public class UserInfoDto {
 
     private final UUID userUuid;
+    private final String nickName;
     private final List<String> roles;
 }
