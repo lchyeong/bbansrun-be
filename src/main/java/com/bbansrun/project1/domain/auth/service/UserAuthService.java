@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Transactional
@@ -36,52 +35,69 @@ public class UserAuthService {
     private final TokenService tokenService;
 
     public LoginResponse login(LoginRequest loginRequest, HttpServletRequest request) {
-        try {
-            CustomUserDetails customUserDetails = authenticateUser(loginRequest);
+        CustomUserDetails customUserDetails = authenticateUser(loginRequest);
 
-            String jwtToken = jwtTokenProvider.createToken(customUserDetails.getUserUuid(),
-                    customUserDetails.getRoles());
-            String refreshToken = jwtTokenProvider.createRefreshToken(customUserDetails.getUserUuid(),
-                    customUserDetails.getRoles());
+        String jwtToken = createJwtToken(customUserDetails);
+        String refreshToken = createRefreshToken(customUserDetails);
 
-            User user = userRepository.findByUserUuid(customUserDetails.getUserUuid())
-                    .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        User user = findUserByUuid(customUserDetails.getUserUuid());
 
-            tokenService.saveRefreshToken(user, refreshToken, getDeviceInfo(request));
+        saveRefreshToken(user, refreshToken, getDeviceInfo(request));
 
-            return new LoginResponse(jwtToken, refreshToken, customUserDetails.getUserUuid().toString(),
-                    customUserDetails.getRoles());
-        } catch (Exception e) {
-            log.error("로그인 실패: 이메일 {}", loginRequest.getEmail(), e);
-            throw new ApiException(ErrorCode.INVALID_CREDENTIALS);
-        }
+        return buildLoginResponse(customUserDetails, jwtToken, refreshToken);
     }
 
     public void logout(HttpServletRequest request) {
-        try {
-            String refreshToken = getRefreshTokenFromCookie(request);
+        String refreshToken = getRefreshTokenFromCookie(request);
 
-            if (refreshToken != null) {
-                refreshTokenRepository.deleteByToken(refreshToken);
-            }
-        } catch (Exception e) {
-            log.error("로그아웃 중 오류 발생", e);
-            throw new ApiException(ErrorCode.INTERNAL_SERVER_ERROR);
+        if (refreshToken != null) {
+            refreshTokenRepository.deleteByToken(refreshToken);
         }
     }
 
     public UserInfoDto getAuthInfo(String authorizationHeader) {
-        try {
-            String token = authorizationHeader.substring(7);
+        String token = authorizationHeader.substring(7);
 
-            UUID userUuid = jwtTokenProvider.getUserUuid(token);
-            List<String> roles = jwtTokenProvider.getRoles(token);
+        UUID userUuid = jwtTokenProvider.getUserUuid(token);
+        String nickName = jwtTokenProvider.getNickname(token);
+        List<String> roles = jwtTokenProvider.getRoles(token);
 
-            return new UserInfoDto(userUuid, roles);
-        } catch (Exception e) {
-            log.error("인증 정보 조회 중 오류 발생", e);
-            throw new ApiException(ErrorCode.UNAUTHORIZED);
-        }
+        return new UserInfoDto(userUuid, nickName, roles);
+    }
+
+    private LoginResponse buildLoginResponse(CustomUserDetails userDetails, String jwtToken, String refreshToken) {
+        return new LoginResponse(
+                jwtToken,
+                refreshToken,
+                userDetails.getNickName(),
+                userDetails.getUserUuid().toString(),
+                userDetails.getRoles()
+        );
+    }
+
+    private void saveRefreshToken(User user, String refreshToken, String deviceInfo) {
+        tokenService.saveRefreshToken(user, refreshToken, deviceInfo);
+    }
+
+    private User findUserByUuid(UUID userUuid) {
+        return userRepository.findByUserUuid(userUuid)
+                .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private String createJwtToken(CustomUserDetails userDetails) {
+        return jwtTokenProvider.createToken(
+                userDetails.getUserUuid(),
+                userDetails.getNickName(),
+                userDetails.getRoles()
+        );
+    }
+
+    private String createRefreshToken(CustomUserDetails userDetails) {
+        return jwtTokenProvider.createRefreshToken(
+                userDetails.getUserUuid(),
+                userDetails.getNickName(),
+                userDetails.getRoles()
+        );
     }
 
     private String getDeviceInfo(HttpServletRequest request) {
@@ -94,17 +110,12 @@ public class UserAuthService {
     }
 
     private CustomUserDetails authenticateUser(LoginRequest loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
-                            loginRequest.getPassword()
-                    )
-            );
-            return (CustomUserDetails) authentication.getPrincipal();
-        } catch (AuthenticationException e) {
-            log.error("사용자 인증 실패: 이메일 {}", loginRequest.getEmail(), e);
-            throw new ApiException(ErrorCode.INVALID_CREDENTIALS);
-        }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
+        return (CustomUserDetails) authentication.getPrincipal();
     }
 }
