@@ -19,9 +19,18 @@ public enum ErrorCode {
     MISSING_PARAMETER(HttpStatus.BAD_REQUEST, "C008", "요청 파라미터가 누락되었습니다"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "C009", "인증되지 않음"),
 
+
     // 사용자 관련 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U001", "사용자를 찾을 수 없습니다"),
     INVALID_USER_PASSWORD(HttpStatus.BAD_REQUEST, "U002", "유효하지 않은 비밀번호입니다"),
+    EMAIL_ALREADY_EXISTED(HttpStatus.CONFLICT, "U003", "이메일이 이미 존재합니다."),
+    INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "U004", "유효한 이메일 주소를 입력해주세요."),
+    MISSING_REQUIRED_FIELDS(HttpStatus.BAD_REQUEST, "U005", "필수 입력 값이 누락되었습니다."),
+    TERMS_NOT_ACCEPTED(HttpStatus.FORBIDDEN, "U006", "필수 약관에 동의하지 않았습니다."),
+    USERNAME_ALREADY_EXISTED(HttpStatus.CONFLICT, "U007", "사용자명이 이미 존재합니다."),
+    INVALID_PROMO_CODE(HttpStatus.BAD_REQUEST, "U008", "유효하지 않은 프로모션 코드입니다."),
+    VERIFICATION_FAILED(HttpStatus.BAD_REQUEST, "U009", "인증에 실패했습니다."),
+    REGISTRATION_BLOCKED(HttpStatus.FORBIDDEN, "U010", "등록이 제한된 사용자입니다."),
 
     // 로그인 및 로그아웃 관련 에러
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "L001", "제공된 자격 증명이 유효하지 않습니다"),
