@@ -25,6 +25,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtTokenParser jwtTokenParser;
 
+    public User getUser(HttpServletRequest request) {
+        return findUserByToken(request);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
     public void createUser(UserJoinDto userJoinDto) {
         String email = userJoinDto.getEmail();
