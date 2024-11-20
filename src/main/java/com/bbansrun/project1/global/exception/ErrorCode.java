@@ -37,7 +37,11 @@ public enum ErrorCode {
     USER_ACCOUNT_LOCKED(HttpStatus.FORBIDDEN, "L002", "사용자 계정이 잠겼습니다"),
     USER_ACCOUNT_DISABLED(HttpStatus.FORBIDDEN, "L003", "사용자 계정이 비활성화되었습니다"),
     REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "L004", "리프레시 토큰이 만료되었습니다"),
-    REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "L005", "유효하지 않은 리프레시 토큰입니다");
+    REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "L005", "유효하지 않은 리프레시 토큰입니다"),
+
+    // Authorization 관련 에러
+    INVALID_HEADER_FORMAT(HttpStatus.BAD_REQUEST, "H001", "Authorization 헤더 형식이 유효하지 않습니다."),
+    MISSING_AUTHORIZATION_HEADER(HttpStatus.BAD_REQUEST, "H002", "Authorization 헤더가 누락되었습니다.");
 
     private final HttpStatus status;
     private final String code;
