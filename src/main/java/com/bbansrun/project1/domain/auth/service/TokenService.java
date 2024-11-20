@@ -8,6 +8,7 @@ import com.bbansrun.project1.domain.users.entity.User;
 import com.bbansrun.project1.global.exception.ApiException;
 import com.bbansrun.project1.global.exception.ErrorCode;
 import com.bbansrun.project1.global.jwt.JwtProperties;
+import com.bbansrun.project1.global.jwt.JwtTokenParser;
 import com.bbansrun.project1.global.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class TokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtProperties jwtProperties;
+    private final JwtTokenParser jwtTokenParser;
 
     public String reissueAccessToken(HttpServletRequest request) {
         String refreshToken = getRefreshTokenFromCookie(request);
@@ -38,9 +40,9 @@ public class TokenService {
 
         return jwtTokenProvider.createToken
                 (
-                        jwtTokenProvider.getUserUuid(refreshToken),
-                        jwtTokenProvider.getNickname(refreshToken),
-                        jwtTokenProvider.getRoles(refreshToken)
+                        jwtTokenParser.getUserUuid(refreshToken),
+                        jwtTokenParser.getNickname(refreshToken),
+                        jwtTokenParser.getRoles(refreshToken)
                 );
     }
 

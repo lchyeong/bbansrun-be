@@ -24,6 +24,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenParser jwtTokenParser;
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
@@ -34,7 +35,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String token = extractTokenFromRequest(request);
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            UUID userUuid = jwtTokenProvider.getUserUuid(token);
+            UUID userUuid = jwtTokenParser.getUserUuid(token);
 
             UserDetails userDetails = customUserDetailsService.loadUserByUuid(userUuid);
 

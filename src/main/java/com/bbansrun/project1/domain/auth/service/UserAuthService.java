@@ -11,6 +11,7 @@ import com.bbansrun.project1.domain.users.repository.UserRepository;
 import com.bbansrun.project1.global.exception.ApiException;
 import com.bbansrun.project1.global.exception.ErrorCode;
 import com.bbansrun.project1.global.jwt.CustomUserDetails;
+import com.bbansrun.project1.global.jwt.JwtTokenParser;
 import com.bbansrun.project1.global.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -31,6 +32,7 @@ public class UserAuthService {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenParser jwtTokenParser;
     private final UserRepository userRepository;
     private final TokenService tokenService;
 
@@ -58,9 +60,9 @@ public class UserAuthService {
     public UserInfoDto getAuthInfo(String authorizationHeader) {
         String token = authorizationHeader.substring(7);
 
-        UUID userUuid = jwtTokenProvider.getUserUuid(token);
-        String nickName = jwtTokenProvider.getNickname(token);
-        List<String> roles = jwtTokenProvider.getRoles(token);
+        UUID userUuid = jwtTokenParser.getUserUuid(token);
+        String nickName = jwtTokenParser.getNickname(token);
+        List<String> roles = jwtTokenParser.getRoles(token);
 
         return new UserInfoDto(userUuid, nickName, roles);
     }
