@@ -1,6 +1,8 @@
 package com.bbansrun.project1.domain.users.entity;
 
 import com.bbansrun.project1.domain.auth.entity.RefreshToken;
+import com.bbansrun.project1.global.exception.ApiException;
+import com.bbansrun.project1.global.exception.ErrorCode;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -54,5 +56,33 @@ public class User {
         this.email = email;
         this.password = password;
         this.roles = roles;
+    }
+
+    public void updateEmail(String email) {
+        if (email == null || email.isEmpty()) {
+            throw new ApiException(ErrorCode.MISSING_REQUIRED_FIELDS);
+        }
+        this.email = email;
+    }
+
+    public void updateNickname(String newNickname) {
+        if (newNickname == null || newNickname.isEmpty()) {
+            throw new ApiException(ErrorCode.MISSING_REQUIRED_FIELDS);
+        }
+        this.nickName = newNickname;
+    }
+
+    public void updatePassword(String newPassword) {
+        if (newPassword == null || newPassword.isEmpty()) {
+            throw new ApiException(ErrorCode.MISSING_REQUIRED_FIELDS);
+        }
+        this.password = newPassword;
+    }
+
+    public void updateRoles(List<Role> newRoles) {
+        if (newRoles == null || newRoles.isEmpty()) {
+            throw new ApiException(ErrorCode.MISSING_REQUIRED_FIELDS);
+        }
+        this.roles = newRoles;
     }
 }
