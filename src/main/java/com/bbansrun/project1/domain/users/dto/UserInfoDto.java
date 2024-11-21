@@ -1,5 +1,6 @@
 package com.bbansrun.project1.domain.users.dto;
 
+import com.bbansrun.project1.domain.users.entity.Role;
 import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
@@ -11,5 +12,5 @@ public class UserInfoDto {
 
     private final UUID userUuid;
     private final String nickName;
-    private final List<String> roles;
+    private final List<Role> roles;
 }
